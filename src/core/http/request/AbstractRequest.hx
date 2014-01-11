@@ -6,7 +6,7 @@ import src.core.http.parameters.PostParameters;
 import src.core.http.parameters.HeaderParameters;
 
 /**
- * Abstract.http.requestthat every Request object have to extend
+ * Abstract request that every Request object have to extend
  * @author Axel Anceau (Peekmo)
  */
 class AbstractRequest
@@ -20,6 +20,7 @@ class AbstractRequest
     public var postParams(null, null) : PostParameters;
     public var authorization(default, default): {user: String, pass: String};
     public var clientIp(default, null) : String;
+    public var host(default, default) : String;
 
     /**
      * Constructor
@@ -27,13 +28,15 @@ class AbstractRequest
      * @param  cookies:       StringMap<String> Client's cookies
      * @param  method:        String            HTTP method of the request
      * @param  uri:           String            URI of the request
+     * @param  host           String            Local server hostname
      * @param  queryString:   String            GET parameters
      * @param  postString:    String            POST parameters as x-www-form-urlencoded
      * @param  authorization: {user: String, pass: String}           User and password for Auth header
      * @param  clientIp:      String            Client's IP address
      */
     public function new(headers: List<{value: String, header: String}>, cookies: StringMap<String>, method: String,
-        uri: String, queryString: String, postString: String, authorization: {user: String, pass: String}, clientIp: String)
+        uri: String, host: String, queryString: String, postString: String, 
+        authorization: {user: String, pass: String}, clientIp: String)
     {
         this.headerParameters = new HeaderParameters(headers);
         this.cookies = cookies;
@@ -42,7 +45,7 @@ class AbstractRequest
         this.queryParams = new QueryParameters(queryString);
         this.authorization = authorization;
         this.clientIp = clientIp;
-
+        this.host = host;
         this.body = '';
         this.postParams = new PostParameters(postString);
 

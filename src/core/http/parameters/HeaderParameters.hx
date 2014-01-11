@@ -3,7 +3,7 @@ package src.core.http.parameters;
 import src.tools.StringMapWX;
 
 /**
- * Parameter bag
+ * Headers parameters bag
  * @author Axel Anceau (Peekmo)
  */
 class HeaderParameters extends AbstractParametersBag

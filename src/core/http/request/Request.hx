@@ -15,8 +15,9 @@ class Request
         var request: AbstractRequest;
 
         #if php
-            request= new RequestPhp();
-            return request;
+            return new RequestPhp();
+        #elseif neko
+            return new RequestNeko();
         #end
 
         return null;

@@ -1,6 +1,7 @@
 package src.tools;
 
 import haxe.ds.StringMap;
+
 /**
  * StringMap extended for WX
  * @author Axel Anceau (Peekmo)
