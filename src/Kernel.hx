@@ -1,9 +1,10 @@
-import src.core.request.Request;
+import src.core.http.request.Request;
+import src.core.http.request.AbstractRequest;
 
 class Kernel
 {
     public static function main()
     {
-        Request.test();
+        var request : AbstractRequest = Request.create();
     }
 }
