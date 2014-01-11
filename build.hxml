@@ -1,0 +1,4 @@
+# [No Main] (js:No output)
+-main Kernel
+-php /var/www/WhaXe
+-cp src/
