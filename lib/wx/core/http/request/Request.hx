@@ -10,9 +10,9 @@ class Request
      * Create a.http.requestfor the given language
      * @return RequestInterface
      */
-    public static function create() : AbstractRequest
+    public static function create() : Dynamic
     {
-        var request: AbstractRequest;
+        var request: Dynamic;
 
         #if php
             return new RequestPhp();

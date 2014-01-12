@@ -6,8 +6,10 @@ class Kernel
 {
     public static function main()
     {
-        var request : AbstractRequest = Request.create();
-        var template : TemplateManager = new TemplateManager();
-        template.render('templates/test.tpl');
+        var request = Request.create();
+        trace(wx.config.ConfigurationMacro.getConfiguration());
+
+        // var template : TemplateManager = new TemplateManager();
+        // template.render('templates/test.tpl');
     }
 }

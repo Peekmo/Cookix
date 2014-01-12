@@ -1,0 +1,8 @@
+{
+    "application": "demo",
+    "author": "Axel Anceau",
+
+    "general": {
+        "env": "%env%"
+    }
+}
