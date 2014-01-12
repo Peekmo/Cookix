@@ -1,4 +1,4 @@
-package src.core.http.request;
+package wx.core.http.request;
 
 /**
  * Request manager

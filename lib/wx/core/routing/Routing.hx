@@ -1,4 +1,4 @@
-package src.Core.Routing;
+package wx.Core.Routing;
 
 /**
  * General routing used by the router

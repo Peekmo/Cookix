@@ -1,9 +1,9 @@
-package src.core.http.request;
+package wx.core.http.request;
 
 import haxe.ds.StringMap;
-import src.core.http.parameters.QueryParameters;
-import src.core.http.parameters.PostParameters;
-import src.core.http.parameters.HeaderParameters;
+import wx.core.http.parameters.QueryParameters;
+import wx.core.http.parameters.PostParameters;
+import wx.core.http.parameters.HeaderParameters;
 
 /**
  * Abstract request that every Request object have to extend

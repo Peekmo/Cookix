@@ -1,12 +1,12 @@
-package src.core.http.request;
+package wx.core.http.request;
 
-import php.Web;
+import neko.Web;
 
 /**
- * Request manager for PHP language
+ * Request manager for Neko language
  * @author Axel Anceau (Peekmo)
  */
-class RequestPhp extends AbstractRequest
+class RequestNeko extends AbstractRequest
 {
     /**
      * Constructor - Gets data from php.Web

@@ -1,4 +1,4 @@
-package src.tools;
+package wx.tools;
 
 import haxe.ds.StringMap;
 

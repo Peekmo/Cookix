@@ -2,3 +2,6 @@
 -main Kernel
 -php /var/www/WhaXe
 -cp src/
+-cp lib/
+-cp application/
+-cmd "cp -R src/demo/templates/ /var/www/WhaXe/"

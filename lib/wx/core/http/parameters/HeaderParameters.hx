@@ -1,6 +1,6 @@
-package src.core.http.parameters;
+package wx.core.http.parameters;
 
-import src.tools.StringMapWX;
+import wx.tools.StringMapWX;
 
 /**
  * Headers parameters bag
