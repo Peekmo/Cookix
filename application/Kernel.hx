@@ -8,8 +8,8 @@ class Kernel
     {
         var request = Request.create();
         trace(wx.config.ConfigurationMacro.getConfiguration());
-
-        // var template : TemplateManager = new TemplateManager();
-        // template.render('templates/test.tpl');
+        // wx.core.container.ServiceMacro.getServices();
+        var template : TemplateManager = new TemplateManager();
+        template.render('templates/test.tpl');
     }
 }

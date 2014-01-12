@@ -19,6 +19,6 @@ class TemplateManager
     {
         var resource : String = File.getContent(Web.getCwd() + view);
         var template : haxe.Template = new haxe.Template(resource);
-        Lib.print(template.execute({name: 'John', age: 33}));
+        Lib.print(template.execute({name: 'Axel', age: 21}));
     }
 }

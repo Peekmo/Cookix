@@ -4,4 +4,4 @@
 -cp src/
 -cp lib/
 -cp application/
--cmd "cp -R src/demo/templates/ /var/www/WhaXe/"
+-cmd "cp -R src/wx/demo/templates/ /var/www/WhaXe/"
