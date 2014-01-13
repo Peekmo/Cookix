@@ -19,37 +19,46 @@ class ConfigurationMacro
      */
     private static function replace(config: DynamicSimple, params: DynamicSimple) : DynamicSimple
     {
-        for (name in config.keys()) {
-            var field = config[name];
-
-            if (config[name]['__a'] != null) {
-                var iarr : Array<Dynamic> = cast config[name];
-                var iterator : IntIterator = new IntIterator(0, iarr.length);
-                for (i in iterator) {
-                    if (Std.string(iarr[i]).charAt(0) == '%') {
-                        var value : String = Std.string(iarr[i]).substr(1, Std.string(iarr[i]).length - 2);
-
-                        if (params.has(value)) {
-                            iarr[i] = params[value];
-                        } else {
-                            throw new NotFoundException('Parameter '+ value +' does not exists');
-                        }
-                    }
-                }
-
-                config[name] = cast iarr;
-            } else if (config.isArray(name)) {
-                config[name] = replace(field, params);
-            } else if (Std.string(config[name]).charAt(0) == '%') {
-                var value : String = Std.string(config[name]).substr(1, Std.string(config[name]).length - 2);
-
-                if (params.has(value)) {
-                    config.set(name, params[value]);
-                } else {
-                    throw new NotFoundException('Parameter '+ value +' does not exists');
-                }
+        for (i in config.iterator()) {
+            trace(i);
+            if (config.isArray(i) || config.isObject(i)) {
+                config[i] = replace(config[i], params);
             }
         }
+
+        // for (name in config.keys()) {
+        //     var field = config[name];
+
+        //     if (config.isArray(name)) {
+        //         trace(config[name].getInt());
+        //         var iarr : Array<Dynamic> = config[name].arrayValues();
+        //         var iterator : IntIterator = new IntIterator(0, iarr.length);
+
+        //         for (i in iterator) {
+        //             if (Std.string(iarr[i]).charAt(0) == '%') {
+        //                 var value : String = Std.string(iarr[i]).substr(1, Std.string(iarr[i]).length - 2);
+
+        //                 if (params.has(value)) {
+        //                     iarr[i] = params[value];
+        //                 } else {
+        //                     throw new NotFoundException('Parameter '+ value +' does not exists');
+        //                 }
+        //             }
+        //         }
+
+        //         config[name] = cast iarr;
+        //     } else if (config.isObject(name)) {
+        //         config[name] = replace(field, params);
+        //     } else if (Std.string(config[name]).charAt(0) == '%') {
+        //         var value : String = Std.string(config[name]).substr(1, Std.string(config[name]).length - 2);
+
+        //         if (params.has(value)) {
+        //             config[name] = params[value];
+        //         } else {
+        //             throw new NotFoundException('Parameter '+ value +' does not exists');
+        //         }
+        //     }
+        // }
 
         return config;
     }
@@ -69,7 +78,7 @@ class ConfigurationMacro
         var confObject : DynamicSimple = Json.parse(config);
 
         var final = replace(confObject, paramObject);
-
+        trace(final);
         trace('Configuration generated');
         return Context.makeExpr(final, Context.currentPos());
     }

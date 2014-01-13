@@ -1,8 +1,11 @@
 {
     "application": "demo",
     "author": "Axel Anceau",
-
     "general": {
-        "env": "%env%"
+        "env": "%env%",
+        "test": [
+            "confg",
+            "%env%"
+        ]
     }
 }
