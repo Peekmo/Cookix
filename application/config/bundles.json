@@ -1,7 +1,6 @@
 {
     "externals": [],
     "internals": [
-        "demo",
-        "test"
+        "wx.demo"
     ]
 }

@@ -2,6 +2,7 @@ package wx.tools;
 
 /**
  * JsonDynamic class to use structured objects
+ * Cast the value to JsonDynamic if that's not an Int, String, Bool or Float
  * @author Axel Anceau
  */
 abstract JsonDynamic(Dynamic) from Dynamic
@@ -142,13 +143,6 @@ abstract JsonDynamic(Dynamic) from Dynamic
     public inline function delete(key:String):Bool
     {
         return Reflect.deleteField(this, key);
-    }
-
-    public inline function clear()
-    {
-        for (i in keys()) {
-            delete(i);
-        }
     }
     
     /**

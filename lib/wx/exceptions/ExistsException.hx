@@ -11,16 +11,8 @@ class ExistsException extends Exception
      * @param  ?message: String        Exception's message
      * @param  ?code:    Int           Error code
      */
-    public function new(?message: String, ?code: Int)
+    public function new(?message: String = 'Already exists', ?code: Int = 409)
     {
-        if (null == message) {
-            message = 'Already exists';
-        }
-
-        if (null == code) {
-            code = 409;
-        }
-
         super(message, code);
     }
 }

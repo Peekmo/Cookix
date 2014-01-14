@@ -19,6 +19,6 @@ class Exception
         this.message = message;
         this.code = code;
 
-        trace('Exception [ '+ this.code +']' + ' : ' + this.message);
+        trace('Exception [ '+ this.code +' ]' + ' : ' + this.message);
     }
 }

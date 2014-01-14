@@ -51,7 +51,7 @@ class ConfigurationMacro
         var confObject : JsonDynamic = JsonParser.decode(config);
 
         var final = replace(confObject, paramObject);
-        trace(JsonParser.encode(final));
+
         trace('Configuration generated');
         return Context.makeExpr(final, Context.currentPos());
     }

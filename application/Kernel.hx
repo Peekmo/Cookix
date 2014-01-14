@@ -7,8 +7,8 @@ class Kernel
     public static function main()
     {
         var request = Request.create();
-        trace(wx.config.ConfigurationMacro.getConfiguration());
-        // wx.core.container.ServiceMacro.getServices();
+        // trace(wx.config.ConfigurationMacro.getConfiguration());
+        wx.core.container.ServiceMacro.getServices();
         var template : TemplateManager = new TemplateManager();
         template.render('templates/test.tpl');
     }
