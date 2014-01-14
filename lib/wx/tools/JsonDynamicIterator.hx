@@ -1,15 +1,15 @@
 package wx.tools;
 
 /**
- * DynamicSimple's iterator
+ * JsonDynamic's iterator
  * @author Axel Anceau
  */
-class DynamicSimpleIterator
+class JsonDynamicIterator
 {
-    var oDynamic : DynamicSimple;
+    var oDynamic : JsonDynamic;
     var keys : Array<String>;
 
-    public function new(?oDynamic : DynamicSimple)
+    public function new(?oDynamic : JsonDynamic)
     {
         this.oDynamic = oDynamic;
         this.keys = oDynamic.keys();
