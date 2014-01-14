@@ -21,7 +21,7 @@ class DynamicSimpleIterator
         return (0 != this.keys.length);
     }
 
-    public function next()
+    public function next() : String
     {
         return this.keys.pop();
     }

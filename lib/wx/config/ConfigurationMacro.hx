@@ -23,6 +23,9 @@ class ConfigurationMacro
             trace(i);
             if (config.isArray(i) || config.isObject(i)) {
                 config[i] = replace(config[i], params);
+            } else {
+                config[i] = 'toto';
+
             }
         }
 

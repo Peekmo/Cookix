@@ -25,6 +25,21 @@ abstract DynamicSimple(Dynamic) from Dynamic
     {
         Reflect.setField(this, key, value);
     }
+          
+    /**
+     * Sets a value for the given key
+     * @param  key:   String Key to set
+     * @param  value: V      Value to set
+     */
+    @:arrayAccess public inline function setString2(key:String, value:String):Void
+    {
+        if (!has(key) && Std.parseInt(key) != null) {
+            setInt(Std.parseInt(key), value);
+        }
+
+        var v : DynamicSimple = cast value;
+        Reflect.setField(this, key, v);
+    }
      
     /**
      * Get a value
@@ -97,7 +112,7 @@ abstract DynamicSimple(Dynamic) from Dynamic
      */
     public inline function isObject(key: String): Bool
     {
-        return (!(Reflect.field(this, key).length > 0) && !isArray(key));
+        if (has(key)) return (!(Reflect.field(this, key).length > 0) && !isArray(key)) else return false;
     }
 
     /**
@@ -124,12 +139,13 @@ abstract DynamicSimple(Dynamic) from Dynamic
 
             var iarr : Array<Dynamic> = cast this;
             var it : IntIterator = new IntIterator(0, iarr.length);
+            var fake : DynamicSimple = cast {};
 
             for (i in it) {
-                setString(Std.string(i), iarr[i]);
+                fake.setString(Std.string(i), iarr[i]);
             }
 
-            simpleIterator = new DynamicSimpleIterator(this);
+            simpleIterator = new DynamicSimpleIterator(fake);
             this = before;
         } 
       
