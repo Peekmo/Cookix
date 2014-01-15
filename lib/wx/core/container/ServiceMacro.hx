@@ -8,6 +8,9 @@ import wx.exceptions.NotFoundException;
 import wx.exceptions.FileNotFoundException;
 import wx.core.config.ConfigurationMacro;
 
+// @TODO service injection in config
+
+
 /**
  * Parse services's files and create the service container
  * @author Axel Anceau (Peekmo)
