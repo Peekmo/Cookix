@@ -8,14 +8,14 @@ import wx.tools.StringMapWX;
  */
 class ServiceContainer
 {
-    private services : StringMapWX<Dynamic>;
+    private var services : JsonDynamic;
 
     /**
      * Constructor
      */
     public function new()
     {
-        this.services = new Array<Dynamic>();
+        this.services = {};
     }
 
     /**

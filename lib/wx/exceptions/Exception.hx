@@ -14,7 +14,7 @@ class Exception
      * @param  ?message: String        Exception's message
      * @param  ?code:    Int           Error code
      */
-    public function new(?message: String, ?code: Int)
+    public function new(?message: String = 'An error occured', ?code: Int = 500)
     {
         this.message = message;
         this.code = code;

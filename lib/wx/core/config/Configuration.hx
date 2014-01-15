@@ -1,4 +1,4 @@
-package wx.config;
+package wx.core.config;
 
 import wx.tools.JsonDynamic;
 

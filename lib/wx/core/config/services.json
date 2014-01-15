@@ -1,0 +1,8 @@
+{
+    "services": [
+        {
+            "id": "configuration",
+            "class": "wx.core.config.Configuration"
+        }
+    ]
+}

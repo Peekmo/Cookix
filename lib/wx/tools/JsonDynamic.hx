@@ -1,5 +1,8 @@
 package wx.tools;
 
+import wx.exceptions.ExistsException;
+
+
 /**
  * JsonDynamic class to use structured objects
  * Cast the value to JsonDynamic if that's not an Int, String, Bool or Float
@@ -56,7 +59,7 @@ abstract JsonDynamic(Dynamic) from Dynamic
     }
           
     /**
-     * Sets a string value for the given key
+     * Sets an int value for the given key
      * @param  key:   String Key to set
      * @param  value: Int    Value to set
      */
@@ -72,7 +75,7 @@ abstract JsonDynamic(Dynamic) from Dynamic
     }
           
     /**
-     * Sets a string value for the given key
+     * Sets a bool value for the given key
      * @param  key:   String Key to set
      * @param  value: Bool   Value to set
      */
@@ -88,7 +91,7 @@ abstract JsonDynamic(Dynamic) from Dynamic
     }
           
     /**
-     * Sets a string value for the given key
+     * Sets a float value for the given key
      * @param  key:   String Key to set
      * @param  value: Float   Value to set
      */
@@ -172,6 +175,26 @@ abstract JsonDynamic(Dynamic) from Dynamic
     public inline function isArray(): Bool
     {
         return ((Reflect.fields(this).length == 2) && (Reflect.fields(this)[0] == '__a'));
+    }
+
+    /**
+     * Merge the current map with the given one
+     * @throws wx.exceptions.ExistsException On same key
+     * @param  map: StringMapWX<T> StringMapWX to merge
+     */
+    public function merge(map: JsonDynamic)
+    {
+        if (null == map) {
+            return;
+        }
+        
+        for (key in map.keys()) {
+            if (has(key)) {
+                throw new ExistsException('Can\'t merge this arrays. ['+ key +'] key is in common');
+            }
+
+            setString(key, map[key]);
+        }
     }
 
     /**

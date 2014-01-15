@@ -1,6 +1,7 @@
 package wx.tools;
 
 import haxe.ds.StringMap;
+import wx.exceptions.ExistsException;
 
 /**
  * StringMap extended for WX
@@ -21,5 +22,25 @@ class StringMapWX<T> extends StringMap<T>
         }
 
         return i;
+    }
+
+    /**
+     * Merge the current map with the given one
+     * @throws wx.exceptions.ExistsException On same key
+     * @param  map: StringMapWX<T> StringMapWX to merge
+     */
+    public function merge(map: StringMapWX<T>)
+    {
+        if (null == map) {
+            return;
+        }
+        
+        for (key in map.keys()) {
+            if (this.exists(key)) {
+                throw new ExistsException('Can\'t merge this arrays. ['+ key +'] key is in common');
+            }
+
+            this.set(key, map.get(key));
+        }
     }
 }
