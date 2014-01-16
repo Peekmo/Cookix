@@ -8,22 +8,17 @@ import wx.tools.StringMapWX;
  */
 class ServiceContainer
 {
-    private var services : JsonDynamic;
-
     /**
-     * Constructor
+     * Container of all services uninstanciated
      */
-    public function new()
-    {
-        this.services = {};
-    }
+    private static var services : JsonDynamic;
 
     /**
      * Returns the required service identified by its name
      * @param  service: String        Service's name
      * @return          The service
      */
-    public function get(service: String) : Dynamic
+    public static function get(service: String) : Dynamic
     {
         if (!services.exists(service)) {
             throw new wx.exceptions.NotFoundException('Service not found : '+ service);
@@ -33,16 +28,10 @@ class ServiceContainer
     }
 
     /**
-     * Register a new service in the container
-     * @param  service:  String        Service's name
-     * @param  oService: Dynamic       Service instance
+     * Initialize the service container with the macro
      */
-    public function set(service: String, oService: Dynamic) : Void
+    @:macro public static function initialization()
     {
-        if (services.exists(service)) {
-            throw new wx.exceptions.NotFoundException('Service name already exists : '+ service);
-        }
-
-        this.services.set(service, oService);
+        services = ServiceMacro.getServices();
     }
 }

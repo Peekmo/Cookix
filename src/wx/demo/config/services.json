@@ -8,7 +8,8 @@
             "id": "demo_service",
             "class": "wx.demo.services.DemoService",
             "parameters": [
-                "%stringToInject%"
+                "%stringToInject%",
+                "@configuration@"
             ]
         }
     ]

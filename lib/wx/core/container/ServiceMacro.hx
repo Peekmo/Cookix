@@ -8,11 +8,10 @@ import wx.exceptions.NotFoundException;
 import wx.exceptions.FileNotFoundException;
 import wx.core.config.ConfigurationMacro;
 
-// @TODO service injection in config
-
-
 /**
  * Parse services's files and create the service container
+ * @x@ is a service
+ * %x% is a parameter
  * @author Axel Anceau (Peekmo)
  */
 class ServiceMacro 
@@ -98,7 +97,8 @@ class ServiceMacro
 
             // Replaces service's parameters
             for (z in config['parameters'].iterator()) {
-                if (Std.string(config['parameters'][z]).charAt(0) == '%') {
+                var key : String = Std.string(config['parameters'][z]);
+                if (key.charAt(0) == '%' && key.charAt(key.length - 1) == '%') {
                     var value : String = Std.string(config['parameters'][i]).substr(1, Std.string(config['parameters'][i]).length - 2);
 
                     if (parameters.has(value)) {
