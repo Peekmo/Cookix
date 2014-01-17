@@ -11,7 +11,7 @@ class Configuration
     /**
      * @var JsonDynamic: configuration Application's configuration built with the macro
      */
-    public var configuration : JsonDynamic (null, null);
+    public var configuration(null, null) : JsonDynamic;
 
     /**
      * Constructor

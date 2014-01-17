@@ -9,7 +9,7 @@ class DemoService
     /**
      * @var iString: String Injected parameter
      */
-    public var iString : String (null,null);
+    public var iString(null,null) : String;
 
     /**
      * Constructor used for dependency injection
@@ -19,5 +19,10 @@ class DemoService
     {
         this.iString = iString;
         trace(this.iString);
+    }
+
+    public function test()
+    {
+        trace('test');
     }
 }
