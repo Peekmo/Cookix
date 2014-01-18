@@ -12,17 +12,24 @@ class DemoService
     public var iString(null,null) : String;
 
     /**
+     * @var wx.core.config.Configuration Service injected
+     */
+    public var configService(null, null): wx.core.config.Configuration;
+
+    /**
      * Constructor used for dependency injection
      * @param  iString: String        Parameter injected
      */
-    public function new(iString: String)
+    public function new(iString: String, config: wx.core.config.Configuration)
     {
         this.iString = iString;
+        this.configService = config;
         trace(this.iString);
     }
 
     public function test()
     {
+        trace(this.configService.getConfiguration());
         trace('test');
     }
 }

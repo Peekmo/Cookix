@@ -11,7 +11,7 @@ import wx.core.config.ConfigurationMacro;
 /**
  * Parse services's files and create the service container
  * @x@ is a service
- * %x% is a parameter
+ * %x% is a parameter from parameters
  * @author Axel Anceau (Peekmo)
  */
 class ServiceMacro 
@@ -102,7 +102,7 @@ class ServiceMacro
                     var value : String = Std.string(config['parameters'][i]).substr(1, Std.string(config['parameters'][i]).length - 2);
 
                     if (parameters.has(value)) {
-                        config['parameters'][i] = parameters[value];
+                        config['parameters'][z] = parameters[value];
                     } else {
                         throw new NotFoundException('Parameter '+ value +' does not exists');
                     }

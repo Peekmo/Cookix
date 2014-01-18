@@ -12,7 +12,7 @@ class ServiceContainer
     /**
      * Container of all services uninstanciated
      */
-    private static var services(null, null) : JsonDynamic;
+    public static var services(default, default) : JsonDynamic;
 
     /**
      * Container of all services instanciated
@@ -44,7 +44,21 @@ class ServiceContainer
      */
     private static function instanciate(service: String) : Dynamic
     {
-        var parameters : Array<String> = cast services[service]['parameters'];
+        var parameters : Array<Dynamic> = new Array<Dynamic>();
+
+        // Iterate through parameters to build the parameter's array
+        for (s in services[service]['parameters'].iterator()) {
+            var key : String = Std.string(services[service]['parameters'][s]);
+            if (key.charAt(0) == '@' && key.charAt(key.length - 1) == '@') {
+                var value : String = Std.string(services[service]['parameters'][s]).substr(1, Std.string(services[service]['parameters'][s]).length - 2);
+
+                var serviceParameter : Dynamic = get(value);
+                parameters.push(serviceParameter);
+            } else {
+                parameters.push(services[service]['parameters'][s]);
+            }
+        }
+
         var inst : Dynamic = Type.createInstance(Type.resolveClass(Std.string(services[service]['service'])), parameters);
 
         instanciations.set(service, inst);
