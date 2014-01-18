@@ -6,6 +6,7 @@ import wx.tools.JsonParser;
 import wx.tools.StringMapWX;
 import wx.exceptions.NotFoundException;
 import wx.exceptions.FileNotFoundException;
+import wx.exceptions.InvalidArgumentException;
 import wx.core.config.ConfigurationMacro;
 
 /**
@@ -85,7 +86,7 @@ class RoutingMacro
     private static function replace(routes: JsonDynamic) : JsonDynamic
     {
         // Get parameters from routing file parameter
-        var parameters: StringMapWX<JsonDynamic> = cast getParameters(routes['parameters']);
+        var parameters: JsonDynamic = cast getParameters(routes['parameters']);
 
         // Loop on routes to adding them into global routes's container (if there's routes)
         if (!routes.isObject() || !routes['routes'].isObject()) {
@@ -98,9 +99,31 @@ class RoutingMacro
                 throw new NotFoundException('Route ' + route + ' does not have controller or action specified');
             }
 
-            var oRoute = new Route(Std.string(route), Std.string(routes['routes'][route]['controller']), Std.string(routes['routes'][route]['action']));
+            // Replace routing parameters
+            var routingParameters : Array<String> = Std.string(route).split('/');
+            var iterator: IntIterator = new IntIterator(0, routingParameters.length);
+            for (i in iterator) {
+                if (0 == i) {
+                    if ('' != routingParameters[i]) {
+                        throw new InvalidArgumentException('[' + route + '] Route must start with "/"');
+                    }
+
+                    continue;
+                }
+
+                if (routingParameters[i].charAt(0) == '%' && routingParameters[i].charAt(routingParameters[i].length - 1) == '%') {
+                    var value : String = Std.string(routingParameters[i]).substr(1, Std.string(routingParameters[i]).length - 2);
+
+                    if (parameters.has(value)) {
+                        routingParameters[i] = Std.string(parameters[value]);
+                    } else {
+                        throw new NotFoundException('Parameter '+ value +' does not exists');
+                    }
+                }
+            }
+
+            var oRoute = new Route(routingParameters.join('/'), Std.string(routes['routes'][route]['controller']), Std.string(routes['routes'][route]['action']));
             arrRoutes.push(cast oRoute.toString());
-            // finalRoutes[Std.string(route)] = oRoute.toString();
         }
 
         var finalRoutes : JsonDynamic = cast []; 
@@ -118,7 +141,7 @@ class RoutingMacro
     {
         for (i in parameters.iterator()) {
             if (parameters[i].isArray() || parameters[i].isObject()) {
-                parameters[i] = getParameters(parameters[i]);
+                throw new InvalidArgumentException('Routing parameters can\'t be an array or an object');
 
             } else if (Std.string(parameters[i]).charAt(0) == '%') {
                 var value : String = Std.string(parameters[i]).substr(1, Std.string(parameters[i]).length - 2);

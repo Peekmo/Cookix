@@ -41,7 +41,7 @@ class ServiceMacro
 
             trace('Service container generated');
         }
-        
+
         return Context.makeExpr(services, Context.currentPos());
     }
 
@@ -114,7 +114,7 @@ class ServiceMacro
                     var value : String = Std.string(config['parameters'][i]).substr(1, Std.string(config['parameters'][i]).length - 2);
 
                     if (parameters.has(value)) {
-                        config['parameters'][z] = parameters[value];
+                        config['parameters'][i] = parameters[value];
                     } else {
                         throw new NotFoundException('Parameter '+ value +' does not exists');
                     }
