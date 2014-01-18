@@ -205,7 +205,7 @@ abstract JsonDynamic(Dynamic) from Dynamic
     {   
         var simpleIterator : JsonDynamicIterator = new JsonDynamicIterator(this);
 
-        if (has('length')) {
+        if (has('__a') || (has('length') && has('copy'))) {
             var iarr : Array<JsonDynamic> = cast this;
             var it : IntIterator = new IntIterator(0, iarr.length);
             var fake : JsonDynamic = cast {};
