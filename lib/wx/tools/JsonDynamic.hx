@@ -158,6 +158,20 @@ abstract JsonDynamic(Dynamic) from Dynamic
     }
 
     /**
+     * Returns number of elements in the current object
+     * @return Int
+     */
+    public function size() : Int
+    {
+        if (isArray() || isObject()) {
+            var obj : Array<JsonDynamic> = cast this;
+            return obj.length;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * Check if the given key is an object or not
      * @param  key: String        Key to check
      * @return      Bool
@@ -174,7 +188,7 @@ abstract JsonDynamic(Dynamic) from Dynamic
      */
     public inline function isArray(): Bool
     {
-        return ((Reflect.fields(this).length == 2) && (Reflect.fields(this)[0] == '__a'));
+        return ((Reflect.fields(this)[0] == '__a') || (has('length') && has('copy')));
     }
 
     /**
@@ -187,13 +201,23 @@ abstract JsonDynamic(Dynamic) from Dynamic
         if (null == map) {
             return;
         }
-        
-        for (key in map.keys()) {
-            if (has(key)) {
-                throw new ExistsException('Can\'t merge this arrays. ['+ key +'] key is in common');
-            }
 
-            setString(key, map[key]);
+        if (map.isArray()) {
+            var value : Int = size();
+            var bonus : Int = 0;
+
+            for (key in map.iterator()) {
+                setInt(value + bonus, map[key]);
+                bonus++;
+            }
+        } else {
+            for (key in map.keys()) {
+                if (has(key)) {
+                    throw new ExistsException('Can\'t merge this arrays. ['+ key +'] key is in common');
+                }
+
+                setString(key, map[key]);
+            }
         }
     }
 

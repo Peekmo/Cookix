@@ -16,20 +16,32 @@ import wx.core.config.ConfigurationMacro;
  */
 class ServiceMacro 
 {
+    /**
+     * Full application's configuration
+     */
     private static var configuration : JsonDynamic;
+
+    /**
+     * Full application's services
+     */
+    private static var services : JsonDynamic;
+
     /**
      * Builds configuration json during Compilation
      * @return Configuration
      */
     macro public static function getServices()
     {
-        configuration = ConfigurationMacro.getConfiguration();
+        if (null == services) {
+            configuration = ConfigurationMacro.getConfiguration();
 
-        trace('Generating service container...');
+            trace('Generating service container...');
 
-        var services : JsonDynamic = getServicesConfiguration();
+            services = getServicesConfiguration();
 
-        trace('Service container generated');
+            trace('Service container generated');
+        }
+        
         return Context.makeExpr(services, Context.currentPos());
     }
 

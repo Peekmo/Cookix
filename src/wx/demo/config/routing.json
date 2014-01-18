@@ -1,0 +1,12 @@
+{
+    "parameters": {
+        "param": "%general.env%"
+    },
+
+    "routes": {
+        "/test/%param%" : {
+            "controller": "wx.demo.controllers.DemoController",
+            "action": "test"
+        }
+    }
+}

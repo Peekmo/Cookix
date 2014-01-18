@@ -12,6 +12,11 @@ import wx.exceptions.NotFoundException;
 class ConfigurationMacro 
 {
     /**
+     * @var configuration: JsonDynamic Full configuration
+     */
+    private static var configuration(null, null): JsonDynamic;
+
+    /**
      * Replaces the configuration options with parameters
      * @param  config: JsonDynamic Config file
      * @param  params: JsonDynamic Parameter file
@@ -42,17 +47,21 @@ class ConfigurationMacro
      */
     macro public static function getConfiguration()
     {
-        trace('Generating configuration...');
+        // To make configuration only one time
+        if (configuration == null) {
+            trace('Generating configuration...');
 
-        var parameters : String = sys.io.File.getContent('application/config/parameters.json');
-        var config : String = sys.io.File.getContent('application/config/config.json');
+            var parameters : String = sys.io.File.getContent('application/config/parameters.json');
+            var config : String = sys.io.File.getContent('application/config/config.json');
 
-        var paramObject : JsonDynamic = JsonParser.decode(parameters);
-        var confObject : JsonDynamic = JsonParser.decode(config);
+            var paramObject : JsonDynamic = JsonParser.decode(parameters);
+            var confObject : JsonDynamic = JsonParser.decode(config);
 
-        var final = replace(confObject, paramObject);
+            configuration = replace(confObject, paramObject);
 
-        trace('Configuration generated');
-        return Context.makeExpr(final, Context.currentPos());
+            trace('Configuration generated');
+        }
+
+        return Context.makeExpr(configuration, Context.currentPos());
     }
 }

@@ -1,5 +1,5 @@
 # [No Main] (js:No output)
--main Kernel
+-main Boot
 -php /var/www/WhaXe
 -cp src/
 -cp lib/
