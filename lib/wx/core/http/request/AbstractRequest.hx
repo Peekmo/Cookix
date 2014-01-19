@@ -41,7 +41,7 @@ class AbstractRequest
         this.headerParameters = new HeaderParameters(headers);
         this.cookies = cookies;
         this.method = method;
-        this.uri = uri;
+        this.uri = this.cleanUri(uri);
         this.queryParams = new QueryParameters(queryString);
         this.authorization = authorization;
         this.clientIp = clientIp;

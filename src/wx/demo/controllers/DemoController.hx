@@ -6,7 +6,6 @@ package wx.demo.controllers;
  */
 class DemoController extends wx.core.controller.Controller
 {
-    public function new() { this.boot(); }
     /**
      * Simple action
      */

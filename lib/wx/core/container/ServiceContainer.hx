@@ -47,15 +47,17 @@ class ServiceContainer
         var parameters : Array<Dynamic> = new Array<Dynamic>();
 
         // Iterate through parameters to build the parameter's array
-        for (s in services[service]['parameters'].iterator()) {
-            var key : String = Std.string(services[service]['parameters'][s]);
-            if (key.charAt(0) == '@' && key.charAt(key.length - 1) == '@') {
-                var value : String = Std.string(services[service]['parameters'][s]).substr(1, Std.string(services[service]['parameters'][s]).length - 2);
+        if (services[service].has('parameters')) {
+            for (s in services[service]['parameters'].iterator()) {
+                var key : String = Std.string(services[service]['parameters'][s]);
+                if (key.charAt(0) == '@' && key.charAt(key.length - 1) == '@') {
+                    var value : String = Std.string(services[service]['parameters'][s]).substr(1, Std.string(services[service]['parameters'][s]).length - 2);
 
-                var serviceParameter : Dynamic = get(value);
-                parameters.push(serviceParameter);
-            } else {
-                parameters.push(services[service]['parameters'][s]);
+                    var serviceParameter : Dynamic = get(value);
+                    parameters.push(serviceParameter);
+                } else {
+                    parameters.push(services[service]['parameters'][s]);
+                }
             }
         }
 

@@ -3,6 +3,14 @@
         {
             "id": "configuration",
             "class": "wx.core.config.Configuration"
+        },
+        {
+            "id": "routing",
+            "class": "wx.core.routing.Routing"
+        },
+        {
+            "id": "resolver",
+            "class": "wx.core.controller.Resolver"
         }
     ]
 }

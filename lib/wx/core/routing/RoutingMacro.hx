@@ -122,8 +122,13 @@ class RoutingMacro
                 }
             }
 
-            var oRoute = new Route(routingParameters.join('/'), Std.string(routes['routes'][route]['controller']), Std.string(routes['routes'][route]['action']));
-            arrRoutes.push(cast oRoute.toString());
+            var oRoute = {
+                route : routingParameters.join('/'), 
+                controller: Std.string(routes['routes'][route]['controller']), 
+                action: Std.string(routes['routes'][route]['action'])
+            };
+
+            arrRoutes.push(cast oRoute);
         }
 
         var finalRoutes : JsonDynamic = cast []; 

@@ -9,7 +9,10 @@ class Service
     /**
      * Constructor
      */
-    public function new() {}
+    public function new() 
+    {
+        ServiceContainer.initialization();
+    }
 
     /**
      * Returns the required service identified by its name from ServiceContainer

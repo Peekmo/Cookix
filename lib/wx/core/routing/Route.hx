@@ -1,5 +1,9 @@
 package wx.core.routing;
 
+/**
+ * Route data structure
+ * @author Axel Anceau (Peekmo)
+ */
 class Route 
 {
     /**
@@ -28,14 +32,5 @@ class Route
         this.route = route;
         this.controller = controller;
         this.action = action;
-    }
-
-    public function toString() : String
-    {
-        return '{
-            "route": ' + this.route + ',
-            "controller": ' + this.controller + ',
-            "action": ' + this.action + '
-        }';
     }
 }
