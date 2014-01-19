@@ -22,7 +22,7 @@ class AbstractRequest
     public var authorization(default, default): {user: String, pass: String};
     public var clientIp(default, null) : String;
     public var host(default, default) : String;
-    public var routing(default, null) : RoutingParameters;
+    public var routing(default, default) : RoutingParameters;
 
     /**
      * Constructor

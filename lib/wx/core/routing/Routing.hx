@@ -2,11 +2,13 @@ package wx.core.routing;
 
 import wx.exceptions.NotFoundException;
 import wx.core.context.Context;
+import wx.core.http.parameters.RoutingParameters;
+
 /**
  * General routing used by the router (Service)
  * @author Axel Anceau (Peekmo)
  */
-@:keep class Routing
+class Routing
 {
     /**
      * @var routes: Array<Route> All routes available
@@ -16,7 +18,7 @@ import wx.core.context.Context;
     /**
      * @var context: Context Context's service
      */
-    private var context(null, null): Context;
+    private var context(default, null): Context;
 
     /**
      * Constructor
@@ -42,6 +44,7 @@ import wx.core.context.Context;
 
                 var arrPath : Array<String> = path.split('/');
                 var arrRoute : Array<String> = oRoute.route.split('/');
+                var routingParameters : RoutingParameters = new RoutingParameters();
 
                 if (arrPath.length == arrRoute.length) {
                     var iterator: IntIterator = new IntIterator(0, arrPath.length);
@@ -58,6 +61,8 @@ import wx.core.context.Context;
                                     match = false;
                                     break;
                                 }
+
+                                routingParameters.set(rParam, arrPath[i]);
                             }
 
                         } else if (arrRoute[i] != arrPath[i] ){
@@ -67,6 +72,7 @@ import wx.core.context.Context;
                     }
 
                     if (true == match && true == checkRequirements(oRoute)) {
+                        this.context.request.routing = routingParameters;
                         return oRoute;
                     }
                 }
