@@ -107,6 +107,7 @@ class ServiceMacro
                 parameters : service['parameters']
             };
 
+
             // Replaces service's parameters
             for (z in config['parameters'].iterator()) {
                 var key : String = Std.string(config['parameters'][z]);
@@ -125,6 +126,8 @@ class ServiceMacro
                 config.delete('parameters');
             }
 
+            // trace(Std.string(service['class']));
+            // var test = Type.createEmptyInstance(Type.resolveClass(Std.string(service['class'])));
             servConfiguration[Std.string(service['id'])] = config;
         }
 

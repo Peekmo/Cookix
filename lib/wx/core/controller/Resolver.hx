@@ -6,7 +6,7 @@ import wx.core.routing.Route;
  * Controller resolver service (Managin controllers)
  * @author Axel Anceau (Peekmo)
  */
-class Resolver
+@:keep class Resolver
 {
     /**
      * Contructor

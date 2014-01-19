@@ -4,7 +4,7 @@ package wx.demo.services;
  * Demo service class
  * @author Axel Anceau
  */
-class DemoService
+@:keep class DemoService
 {
     /**
      * @var iString: String Injected parameter

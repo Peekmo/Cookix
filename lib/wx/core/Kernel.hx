@@ -2,6 +2,7 @@ package wx.core;
 
 import wx.core.routing.Route;
 import wx.core.container.Service;
+import Imports;
 
 /**
  * Application's kernel, called on every request just after booting

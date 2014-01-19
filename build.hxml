@@ -1,4 +1,6 @@
 # [No Main] (js:No output)
+-cmd "neko wxcommands.n build"
+--next
 -main Boot
 -php /var/www/WhaXe
 -cp src/

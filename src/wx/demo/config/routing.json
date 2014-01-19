@@ -4,7 +4,7 @@
     },
 
     "routes": {
-        "/test/%param%" : {
+        "/test/%param%/:test" : {
             "controller": "wx.demo.controllers.DemoController",
             "action": "test"
         }

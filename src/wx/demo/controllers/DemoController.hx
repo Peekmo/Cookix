@@ -11,7 +11,6 @@ class DemoController extends wx.core.controller.Controller
      */
     public function testAction()
     {
-        this.ok();
         this.container.get('demo_service').test();
     }
 }
