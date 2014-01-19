@@ -4,6 +4,7 @@ import haxe.ds.StringMap;
 import wx.core.http.parameters.QueryParameters;
 import wx.core.http.parameters.PostParameters;
 import wx.core.http.parameters.HeaderParameters;
+import wx.core.http.parameters.RoutingParameters;
 
 /**
  * Abstract request that every Request object have to extend
@@ -11,16 +12,17 @@ import wx.core.http.parameters.HeaderParameters;
  */
 class AbstractRequest
 {
-    public var headerParameters(null, null) : HeaderParameters;
+    public var headers(default, null) : HeaderParameters;
     public var body(default, default): String;
     public var cookies(default, default) : StringMap<String>;
     public var method(default, default) : String;
     public var uri(default, default): String;
-    public var queryParams(null, null) : QueryParameters;
-    public var postParams(null, null) : PostParameters;
+    public var query(default, null) : QueryParameters;
+    public var request(default, null) : PostParameters;
     public var authorization(default, default): {user: String, pass: String};
     public var clientIp(default, null) : String;
     public var host(default, default) : String;
+    public var routing(default, null) : RoutingParameters;
 
     /**
      * Constructor
@@ -35,52 +37,26 @@ class AbstractRequest
      * @param  clientIp:      String            Client's IP address
      */
     public function new(headers: List<{value: String, header: String}>, cookies: StringMap<String>, method: String,
-        uri: String, host: String, queryString: String, postString: String, 
+        uri: String, host: String, queryString: String, postString: String,
         authorization: {user: String, pass: String}, clientIp: String)
     {
-        this.headerParameters = new HeaderParameters(headers);
+        this.headers = new HeaderParameters(headers);
         this.cookies = cookies;
         this.method = method;
         this.uri = this.cleanUri(uri);
-        this.queryParams = new QueryParameters(queryString);
+        this.query = new QueryParameters(queryString);
         this.authorization = authorization;
         this.clientIp = clientIp;
         this.host = host;
+        this.routing = new RoutingParameters();
         this.body = '';
-        this.postParams = new PostParameters(postString);
+        this.request = new PostParameters(postString);
 
         // If there's no post parameters but postString, that's the body request
-        if (this.request().has(postString)) {
+        if (this.request.has(postString)) {
             this.body = postString;
-            this.postParams = new PostParameters(''); 
+            this.request = new PostParameters(''); 
         }
-    }
-
-    /**
-     * Returns all request's headers
-     * @return HeaderParameters
-     */
-    public function headers() : HeaderParameters
-    {
-        return this.headerParameters;
-    }
-
-    /**
-     * Gets query parameters
-     * @return    QueryParameters
-     */
-    public function query() : QueryParameters
-    {
-        return this.queryParams;
-    }
-
-    /**
-     * Gets a POST parameter
-     * @return      PostParameters
-     */
-    public function request() : PostParameters
-    {
-        return this.postParams;
     }
 
     /**

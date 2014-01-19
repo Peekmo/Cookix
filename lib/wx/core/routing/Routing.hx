@@ -50,7 +50,16 @@ import wx.core.context.Context;
                     for (i in iterator) {
                         // Dynamic routing parameter
                         if (arrRoute[i].charAt(0) == ':') {
-                            continue;
+                            var rParam : String = arrRoute[i].substring(1, arrRoute[i].length);
+                            if (oRoute.requirements.has(rParam)) {
+                                var reg : EReg = new EReg(Std.string(oRoute.requirements[rParam]), '');
+
+                                if (!reg.match(arrPath[i])) {
+                                    match = false;
+                                    break;
+                                }
+                            }
+
                         } else if (arrRoute[i] != arrPath[i] ){
                             match = false;
                             break;

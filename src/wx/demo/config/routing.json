@@ -5,11 +5,13 @@
     },
 
     "routes": {
-        "/test/%param%/:test" : {
+        "/test/%param%/:test/:id" : {
             "controller": "wx.demo.controllers.DemoController",
             "action": "test",
             "requirements": {
-                "_methods": ["GET"]
+                "_methods": ["GET"],
+                "test": "^[a-z]*$",
+                "id": "^[0-9]+$"
             }
         }
     }
