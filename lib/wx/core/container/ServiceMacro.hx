@@ -112,10 +112,10 @@ class ServiceMacro
             for (z in config['parameters'].iterator()) {
                 var key : String = Std.string(config['parameters'][z]);
                 if (key.charAt(0) == '%' && key.charAt(key.length - 1) == '%') {
-                    var value : String = Std.string(config['parameters'][i]).substr(1, Std.string(config['parameters'][i]).length - 2);
+                    var value : String = Std.string(config['parameters'][z]).substr(1, Std.string(config['parameters'][z]).length - 2);
 
                     if (parameters.has(value)) {
-                        config['parameters'][i] = parameters[value];
+                        config['parameters'][z] = parameters[value];
                     } else {
                         throw new NotFoundException('Parameter '+ value +' does not exists');
                     }

@@ -1,4 +1,5 @@
 {
+    "comment": ["Parameters can only be used in routes"],
     "parameters": {
         "param": "%general.env%"
     },
@@ -6,7 +7,10 @@
     "routes": {
         "/test/%param%/:test" : {
             "controller": "wx.demo.controllers.DemoController",
-            "action": "test"
+            "action": "test",
+            "requirements": {
+                "_methods": ["GET"]
+            }
         }
     }
 }

@@ -1,4 +1,8 @@
 {
+    "parameters": {
+        "env": "%general.env%"
+    },
+
     "services": [
         {
             "id": "configuration",
@@ -6,11 +10,21 @@
         },
         {
             "id": "routing",
-            "class": "wx.core.routing.Routing"
+            "class": "wx.core.routing.Routing",
+            "parameters": [
+                "@context@"
+            ]
         },
         {
             "id": "resolver",
             "class": "wx.core.controller.Resolver"
+        },
+        {
+            "id": "context",
+            "class": "wx.core.context.Context",
+            "parameters": [
+                "%env%"
+            ]
         }
     ]
 }

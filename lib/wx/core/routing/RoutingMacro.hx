@@ -125,7 +125,8 @@ class RoutingMacro
             var oRoute = {
                 route : routingParameters.join('/'), 
                 controller: Std.string(routes['routes'][route]['controller']), 
-                action: Std.string(routes['routes'][route]['action'])
+                action: Std.string(routes['routes'][route]['action']),
+                requirements: routes['routes'][route]['requirements']
             };
 
             arrRoutes.push(cast oRoute);

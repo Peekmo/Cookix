@@ -103,4 +103,14 @@ class AbstractRequest
 
         return uri;
     }
+
+    /**
+     * Checks if the Request's method is the given one
+     * @param  method: String        Method to check
+     * @return         Bool
+     */
+    public function isMethod(method: String) : Bool
+    {
+        return (this.method.toUpperCase() == method.toUpperCase());
+    }
 }

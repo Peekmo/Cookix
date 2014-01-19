@@ -18,6 +18,9 @@ class Kernel
         // Get service container
         var container : Service = new Service();
 
+        // Sets the request to the context
+        container.get('context').request = request;
+
         var route : Route = cast container.get('routing').match(Std.string(request.uri));
 
         var response = new wx.core.controller.Resolver();
