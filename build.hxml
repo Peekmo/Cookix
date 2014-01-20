@@ -1,4 +1,4 @@
--cmd "/usr/bin/neko wxcommands.n build"
+-cmd "neko wxcommands.n build"
 --next
 -main Boot
 -php /var/www/WhaXe

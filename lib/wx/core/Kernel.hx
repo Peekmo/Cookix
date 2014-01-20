@@ -22,7 +22,9 @@ class Kernel
         container.get('context').request = request;
         var route : Route = cast container.get('routing').match(Std.string(request.uri));
 
-        var response = new wx.core.controller.Resolver();
-        response.resolve(route);
+        var controller = new wx.core.controller.Resolver();
+        var response = controller.resolve(route);
+
+        response.render();
     }
 }
