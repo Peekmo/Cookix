@@ -9,7 +9,7 @@
             "controller": "wx.demo.controllers.DemoController",
             "action": "test",
             "requirements": {
-                "_methods": ["GET"],
+                "_methods": ["POST", "GET"],
                 "test": "^[a-z]*$",
                 "id": "^[0-9]+$"
             }

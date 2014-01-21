@@ -1,6 +1,7 @@
 package wx.demo.controllers;
 
 import wx.core.http.response.Response;
+import wx.core.http.response.JsonResponse;
 
 /**
  * Controller usage example
@@ -15,6 +16,6 @@ class DemoController extends wx.core.controller.Controller
     {
         this.container.get('demo_service').test();
 
-        return new Response('test');
+        return new JsonResponse({test: 'ok'});
     }
 }
