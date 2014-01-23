@@ -67,4 +67,21 @@ class Response
         this.response.setHeaders(this.headers);
         this.response.print(this.content);
     }
+
+    /**
+     * Set client's cookies
+     */
+    public function setCookie(key: String, value: String, ?expire: Date, ?domain: String, ?path: String, ?secure: Bool, ?httpOnly: Bool) : Void
+    {
+        this.response.setCookie(key, value, expire, domain, path, secure, httpOnly);
+    }
+
+    /**
+     * Get client's cookies
+     * @return Cookies
+     */
+    public function getCookies() : StringMap<String>
+    {
+        return this.response.getCookies();
+    }
 }

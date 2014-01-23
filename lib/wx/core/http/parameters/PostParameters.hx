@@ -14,12 +14,15 @@ class PostParameters extends AbstractParametersBag
      */
     public function new(params: String)
     {
-        var arrayParams : Array<String> = params.split('&');
-
         var hashParams : StringMapWX<String> = new StringMapWX<String>();
-        for (param in arrayParams.iterator()) {
-            var aParam : Array<String> = param.split('=');
-            hashParams.set(aParam[0], aParam[1]);
+
+        if (null != params) {
+            var arrayParams : Array<String> = params.split('&');
+
+            for (param in arrayParams.iterator()) {
+                var aParam : Array<String> = param.split('=');
+                hashParams.set(aParam[0], aParam[1]);
+            }
         }
 
         super(hashParams);

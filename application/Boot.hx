@@ -15,7 +15,7 @@ class Boot
     {
         var request = Request.create();
         Kernel.handle(request);
-        // trace(wx.config.ConfigurationMacro.getConfiguration());
+        //trace(wx.config.ConfigurationMacro.getConfiguration());
         // trace(wx.core.container.ServiceMacro.getServices());
 
         // ServiceContainer.get('demo_service').test();
@@ -26,7 +26,7 @@ class Boot
         // var routes : wx.tools.JsonDynamic = RoutingMacro.getRoutes();
         // trace(routes);
 
-        var template : TemplateManager = new TemplateManager();
-        template.render('templates/test.tpl');
+        // var template : TemplateManager = new TemplateManager();
+        // template.render('templates/test.tpl');
     }
 }

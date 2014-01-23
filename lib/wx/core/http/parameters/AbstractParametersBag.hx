@@ -67,6 +67,10 @@ class AbstractParametersBag
      */
     public function has(key: String): Bool
     {
-        return this.params.exists(key);
+        if (null != key) {
+            return this.params.exists(key);
+        }
+
+        return false;
     }
 }
