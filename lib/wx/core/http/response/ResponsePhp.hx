@@ -38,7 +38,7 @@ class ResponsePhp implements ResponseInterface
      */
     public function setHeaders(headers: HeaderParameters) : Void
     {
-        for (key in headers.all().iterator()) {
+        for (key in headers.all().keys()) {
             Web.setHeader(key, headers.get(key));
         }
     }

@@ -6,3 +6,4 @@
 -cp lib/
 -cp application/
 -cmd "cp -R src/wx/demo/templates/ /var/www/WhaXe/"
+--no-traces

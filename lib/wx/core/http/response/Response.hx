@@ -1,6 +1,7 @@
 package wx.core.http.response;
 
 import wx.core.http.parameters.HeaderParameters;
+import haxe.ds.StringMap;
 
 /**
  * Response to send to the client
@@ -34,7 +35,7 @@ class Response
      * @param  ?content    : String Content to print
      * @param  ?statusCode : Int    HTTP status code of the reponse
      */
-    public function new(?content : String, ?statusCode : Int)
+    public function new(?content : String, ?statusCode : Int, ?headers: StringMap<String>)
     {
         #if php
             this.response = new ResponsePhp();
@@ -45,6 +46,12 @@ class Response
         this.content = content;
         this.statusCode = statusCode;
         this.headers = new HeaderParameters(this.response.getHeaders());
+
+        if (null != headers) {
+            for (i in headers.keys()) {
+                this.headers.set(i, headers.get(i));
+            }
+        }
     }
 
     /**
