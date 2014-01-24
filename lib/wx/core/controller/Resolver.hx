@@ -22,8 +22,8 @@ import wx.core.routing.Route;
     {
         // Creates the controller, call the boot method (from superclass) and action
         var inst : Dynamic = Type.createEmptyInstance(Type.resolveClass(route.controller));
-        Reflect.callMethod(inst, 'boot', []);
-        var response = Reflect.callMethod(inst, route.action + 'Action', []);
+        Reflect.callMethod(inst, Reflect.field(inst, 'boot'), []);
+        var response = Reflect.callMethod(inst, Reflect.field(inst, route.action + 'Action'), []);
 
         return response;
     }

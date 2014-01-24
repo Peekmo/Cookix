@@ -12,10 +12,12 @@ class HeaderParameters extends AbstractParametersBag
     {
         var hashParams : StringMapWX<String> = new StringMapWX<String>();
 
-        for (param in params.iterator()) {
-            hashParams.set(param.header, param.value);
+        if (null != params) {
+            for (param in params.iterator()) {
+                hashParams.set(param.header, param.value);
+            }
         }
-
+        
         super(hashParams);
     }
 }
