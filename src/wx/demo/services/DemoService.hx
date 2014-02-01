@@ -27,9 +27,14 @@ package wx.demo.services;
         trace(this.iString);
     }
 
-    public function test()
+    public function test() : Void
     {
         trace(this.configService.getConfiguration());
         trace('test');
+    }
+
+    public function onEvent(event: Dynamic) : Void
+    {
+        trace('Event received');
     }
 }

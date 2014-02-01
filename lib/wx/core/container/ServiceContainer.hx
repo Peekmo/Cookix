@@ -2,6 +2,7 @@ package wx.core.container;
 
 import wx.tools.StringMapWX;
 import wx.tools.JsonDynamic;
+import wx.core.events.Subscriber;
 
 /**
  * Service container
@@ -65,6 +66,32 @@ class ServiceContainer
 
         instanciations.set(service, inst);
         return inst;
+    }
+
+    /**
+     * Gets all subscribers to the given tag
+     * @param  tag: String        Event's tag
+     * @return      Array<String>
+     */
+    public function getSubscribers(type: String, tag: String) : Array<Subscriber>
+    {
+        var subscribers : Array<Subscriber> = new Array<Subscriber>();
+
+        for (service in services.iterator()) {
+            if (services[service].has('tags')) {
+                var tags = services[service]['tags'];
+                for (i in tags) {
+                    if (tags['type'] == type && tags['tag'] == tag) {
+                        subscribers.push({
+                            service: cast services[service]['class'],
+                            method: cast tags['method']
+                        });
+                    }
+                }
+            }
+        }
+
+        return subscribers;
     }
 
     /**

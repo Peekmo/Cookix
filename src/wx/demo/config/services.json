@@ -9,7 +9,10 @@
             "class": "wx.demo.services.DemoService",
             "parameters": [
                 "%stringToInject%",
-                "@configuration@"
+                "@wx.configuration@"
+            ],
+            "tags": [
+                {"type":"event", "tag": "test", "method": "onEvent"}
             ]
         }
     ]

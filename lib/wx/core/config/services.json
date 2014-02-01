@@ -5,22 +5,22 @@
 
     "services": [
         {
-            "id": "configuration",
+            "id": "wx.configuration",
             "class": "wx.core.config.Configuration"
         },
         {
-            "id": "routing",
+            "id": "wx.routing",
             "class": "wx.core.routing.Routing",
             "parameters": [
-                "@context@"
+                "@wx.context@"
             ]
         },
         {
-            "id": "resolver",
+            "id": "wx.resolver",
             "class": "wx.core.controller.Resolver"
         },
         {
-            "id": "context",
+            "id": "wx.context",
             "class": "wx.core.context.Context",
             "parameters": [
                 "%env%"
