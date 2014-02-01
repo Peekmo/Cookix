@@ -49,6 +49,18 @@ class EventDispatcher
      */
     public function dispatch(tag: String, event: Dynamic) : Void
     {
-        trace(this.events.get('test'));
+        var listeners : Array<Subscriber> = this.events.get('test');
+
+        if (null != listeners) {
+            for (listener in listeners.iterator()) {
+                var args: Array<Dynamic> = new Array<Dynamic>();
+                args.push(event);
+
+                var service = this.container.get(Std.string(listener.service));
+
+                Reflect.callMethod(service,
+                    Reflect.field(service, Std.string(listener.method)), args);
+            }
+        }
     }
 }
