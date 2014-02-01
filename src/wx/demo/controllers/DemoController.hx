@@ -14,7 +14,7 @@ class DemoController extends wx.core.controller.Controller
      */
     public function testAction()
     {
-        this.container.get('demo_service').test();
+        this.container.get('wx.dispatcher').dispatch('test', 'test');
 
         var response = new JsonResponse({test: 'ok',test2: 'ok',test3: 'ok',test4: 'ok',test5: 'ok',});
         response.setCookie('test', 'value');

@@ -4,4 +4,5 @@ import wx.core.config.Configuration;
 import wx.core.routing.Routing;
 import wx.core.controller.Resolver;
 import wx.core.context.Context;
+import wx.core.events.EventDispatcher;
 class Imports {}

@@ -25,6 +25,13 @@
             "parameters": [
                 "%env%"
             ]
+        },
+        {
+            "id": "wx.dispatcher",
+            "class": "wx.core.events.EventDispatcher",
+            "parameters": [
+                "@wx.container@"
+            ]
         }
     ]
 }

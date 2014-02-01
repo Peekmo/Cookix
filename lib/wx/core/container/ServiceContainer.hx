@@ -21,12 +21,21 @@ class ServiceContainer
     private static var instanciations(null, null) : StringMapWX<Dynamic> = new StringMapWX<Dynamic>();
 
     /**
+     * Services tags
+     */
+    public static var tags(default, default) : JsonDynamic;
+
+    /**
      * Returns the required service identified by its name
      * @param  service: String        Service's name
      * @return          The service
      */
     public static function get(service: String) : Dynamic
     {
+        if ('wx.container' == service) {
+            return new Service();
+        }
+
         if (!instanciations.exists(service) && !services.has(service)) {
             throw new wx.exceptions.NotFoundException('Service not found : '+ service);
         }
@@ -69,29 +78,17 @@ class ServiceContainer
     }
 
     /**
-     * Gets all subscribers to the given tag
-     * @param  tag: String        Event's tag
-     * @return      Array<String>
+     * Get tags from the given type
+     * @param  ?type: String        Type of events required
+     * @return     Tag list
      */
-    public function getSubscribers(type: String, tag: String) : Array<Subscriber>
+    public static function getTags(?type: String) : JsonDynamic
     {
-        var subscribers : Array<Subscriber> = new Array<Subscriber>();
-
-        for (service in services.iterator()) {
-            if (services[service].has('tags')) {
-                var tags = services[service]['tags'];
-                for (i in tags) {
-                    if (tags['type'] == type && tags['tag'] == tag) {
-                        subscribers.push({
-                            service: cast services[service]['class'],
-                            method: cast tags['method']
-                        });
-                    }
-                }
-            }
+        if (null == type) {
+            return tags;
         }
 
-        return subscribers;
+        return tags[type];
     }
 
     /**
@@ -100,5 +97,6 @@ class ServiceContainer
     public static function initialization()
     {
         services = ServiceMacro.getServices();
+        tags = ServiceMacro.getTags();
     }
 }

@@ -27,12 +27,18 @@ class ServiceMacro
     private static var services : JsonDynamic;
 
     /**
+     * All tags registered on services
+     */
+    private static var tags: JsonDynamic;
+
+    /**
      * Builds configuration json during Compilation
      * @return Configuration
      */
     macro public static function getServices()
     {
         if (null == services) {
+            tags = cast {};
             configuration = ConfigurationMacro.getConfiguration();
 
             trace('Generating service container...');
@@ -43,6 +49,24 @@ class ServiceMacro
         }
 
         return Context.makeExpr(services, Context.currentPos());
+    }
+
+    /**
+     * Get given tags from services
+     * @param  ?type: String        Tag's type required
+     * @return        Tags
+     */
+    macro public static function getTags(?type: String)
+    {
+        if (null == tags) {
+            getServices();
+        }
+
+        if (null == type) {
+            return Context.makeExpr(tags, Context.currentPos());
+        }
+
+        return Context.makeExpr(tags[type], Context.currentPos());
     }
 
     /**
@@ -126,8 +150,26 @@ class ServiceMacro
                 config.delete('parameters');
             }
 
-            // trace(Std.string(service['class']));
-            // var test = Type.createEmptyInstance(Type.resolveClass(Std.string(service['class'])));
+            if (service.has('tags')) {
+                var sTags = service['tags'];
+                config['tags'] = sTags;
+
+                // Get tags
+                for (i in sTags.iterator()) {
+                    var key: String = Std.string(sTags[i]['type']);
+                    var tag: String = Std.string(sTags[i]['tag']);
+
+                    // Adding services informations
+                    sTags[i]['service'] = Std.string(service['id']);
+
+                    if (!tags.has(key)) {
+                        tags[key] = cast {};
+                    }
+
+                    tags[key][tag] = sTags[i];
+                }
+            }
+
             servConfiguration[Std.string(service['id'])] = config;
         }
 

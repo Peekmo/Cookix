@@ -1,6 +1,8 @@
 package wx.core.events;
 
-import wx.core.container.ServiceContainer;
+import wx.core.container.Service;
+import haxe.ds.StringMap;
+import wx.tools.JsonDynamic;
 
 /**
  * Events dispatcher service. Throws events to all subscribers
@@ -11,15 +13,33 @@ class EventDispatcher
     /**
      * @var container: ServiceContainer All services registered
      */
-    var container : ServiceContainer;
+    var container : Service;
+
+    /**
+     * @var events: StringMap<Subscriber> All events subsribers
+     */
+    var events: StringMap<Array<Subscriber>>;
 
     /**
      * Constructor - Inject service container to get subscribed services
      * @param  container: ServiceContainer All services
      */
-    public function new(container: ServiceContainer) : Void
+    public function new(container: Service) : Void
     {
         this.container = container;
+
+        this.events = new StringMap<Array<Subscriber>>();
+        var tags : JsonDynamic = this.container.getTags('event');
+        for (i in tags.iterator()) {
+            if (!this.events.exists(Std.string(i))) {
+                this.events.set(Std.string(i), new Array<Subscriber>());
+            }
+
+            this.events.get(Std.string(i)).push({
+                service: Std.string(tags[i]['service']), 
+                method: Std.string(tags[i]['method'])
+            });
+        }
     }
 
     /**
@@ -29,6 +49,6 @@ class EventDispatcher
      */
     public function dispatch(tag: String, event: Dynamic) : Void
     {
-        
+        trace(this.events.get('test'));
     }
 }
