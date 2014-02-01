@@ -49,7 +49,7 @@ class EventDispatcher
      */
     public function dispatch(tag: String, event: Dynamic) : Void
     {
-        var listeners : Array<Subscriber> = this.events.get('test');
+        var listeners : Array<Subscriber> = this.events.get(tag);
 
         if (null != listeners) {
             for (listener in listeners.iterator()) {

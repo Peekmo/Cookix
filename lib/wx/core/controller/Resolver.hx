@@ -1,17 +1,27 @@
 package wx.core.controller;
 
 import wx.core.routing.Route;
+import wx.core.events.EventDispatcher;
 
 /**
  * Controller resolver service (Managin controllers)
  * @author Axel Anceau (Peekmo)
  */
-@:keep class Resolver
+class Resolver
 {
     /**
-     * Contructor
+     * @var dispatcher: Dispatcher Event dispatcher
      */
-    public function new() {}
+    public var dispatcher: EventDispatcher;
+
+    /**
+     * Contructor
+     * @param dispatcher: Dispatcher Event dispatcher
+     */
+    public function new(dispatcher: EventDispatcher)
+    {
+        this.dispatcher = dispatcher;
+    }
 
     /**
      * Call the given Controller's route
@@ -22,6 +32,10 @@ import wx.core.routing.Route;
     {
         // Creates the controller, call the boot method (from superclass) and action
         var inst : Dynamic = Type.createEmptyInstance(Type.resolveClass(route.controller));
+
+        // Before controller event
+        this.dispatcher.dispatch('wx.beforeController', new BeforeControllerEvent(inst));
+
         Reflect.callMethod(inst, Reflect.field(inst, 'boot'), []);
         var response = Reflect.callMethod(inst, Reflect.field(inst, route.action + 'Action'), []);
 

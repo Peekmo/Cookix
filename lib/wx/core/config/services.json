@@ -17,7 +17,10 @@
         },
         {
             "id": "wx.resolver",
-            "class": "wx.core.controller.Resolver"
+            "class": "wx.core.controller.Resolver",
+            "parameters": [
+                "@wx.dispatcher@"
+            ]
         },
         {
             "id": "wx.context",
