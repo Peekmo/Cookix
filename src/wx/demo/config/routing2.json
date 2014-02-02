@@ -1,0 +1,8 @@
+{
+    "routes": {
+        "/test" : {
+            "controller": "wx.demo.controllers.DemoController",
+            "action": "test2"
+        }
+    }
+}

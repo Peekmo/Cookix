@@ -21,4 +21,10 @@ class DemoController extends wx.core.controller.Controller
 
         return response;
     }
+
+    public function test2Action()
+    {
+        var response = new JsonResponse({ok: 'ok'});
+        return response;
+    }
 }

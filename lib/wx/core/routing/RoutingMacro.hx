@@ -59,17 +59,25 @@ class RoutingMacro
             // Get config.json from each internal bundles
             for (i in libs['internals'].iterator()) {
                 var folder : String = Std.string(libs['internals'][i]).split('.').join('/');
-                var routing : String = sys.io.File.getContent('src/' + folder + '/config/routing.json');
+                var config : String = sys.io.File.getContent('src/' + folder + '/config/config.json');
 
-                final.merge(replace(JsonParser.decode(routing)));
+                var decoded : JsonDynamic = JsonParser.decode(config);
+                for (z in decoded['routing'].iterator()) {
+                    var routing : String = sys.io.File.getContent('src/' + folder + '/config/' + decoded['routing'][z]);
+                    final.merge(replace(JsonParser.decode(routing)));
+                }
             }
 
             // Get config.json from each external bundles
             for (i in libs['externals'].iterator()) {
                 var folder : String = Std.string(libs['externals'][i]).split('.').join('/');
-                var routing : String = sys.io.File.getContent('lib/' + folder + '/config/routing.json');
+                var config : String = sys.io.File.getContent('lib/' + folder + '/config/config.json');
 
-                final.merge(replace(JsonParser.decode(routing)));
+                var decoded : JsonDynamic = JsonParser.decode(config);
+                for (z in decoded['routing'].iterator()) {
+                    var routing : String = sys.io.File.getContent('lib/' + folder + '/config/' + decoded['routing'][z]);
+                    final.merge(replace(JsonParser.decode(routing)));
+                }
             }
 
             return final;

@@ -1,0 +1,10 @@
+{
+    "routing": [
+        "routing.json",
+        "routing2.json"
+    ],
+
+    "services": [
+        "services.json"
+    ]
+}
