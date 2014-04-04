@@ -13,12 +13,18 @@ class MacroMetadataReader
      */
     public static function getMetadata(name : String) : ClassMetadata
     {
-        var type = haxe.macro.Context.getType(name);
-        switch(type) {
-            case TInst(cl, _):
-                return new ClassMetadata(cl.get().meta.get(), cl.get().fields.get());
-            case _:
-                throw "Can\'t get metadata from this type of object";
-        }
+        #if macro
+            var type = haxe.macro.Context.getType(name);
+            switch(type) {
+                case TInst(cl, _):
+                    return new ClassMetadata(cl.get().meta.get(), cl.get().fields.get());
+                case _:
+                    throw "Can\'t get metadata from this type of object";
+            }
+        #else
+            throw "Can't get Metadata with MMR at runtime";
+        #end
+
+        return null;
     }
 }

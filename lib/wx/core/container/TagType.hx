@@ -5,7 +5,8 @@
  * @author Axel Anceau
  */
 typedef TagType = {
-    var name   : String;
-    var type   : String;
-    var method : String;
+    var name      : String;
+    var type      : String;
+    var method    : String;
+    var namespace : String;
 }

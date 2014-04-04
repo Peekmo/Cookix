@@ -1,7 +1,7 @@
 package wx.core.container;
 
 import wx.tools.StringMapWX;
-import wx.tools.JsonDynamic;
+import wx.tools.ObjectDynamic;
 import wx.core.events.Subscriber;
 
 /**
@@ -13,7 +13,7 @@ class ServiceContainer
     /**
      * Container of all services uninstanciated
      */
-    public static var services(default, default) : JsonDynamic;
+    public static var services(default, default) : ObjectDynamic;
 
     /**
      * Container of all services instanciated
@@ -23,7 +23,7 @@ class ServiceContainer
     /**
      * Services tags
      */
-    public static var tags(default, default) : JsonDynamic;
+    public static var tags(default, default) : ObjectDynamic;
 
     /**
      * Returns the required service identified by its name
@@ -82,7 +82,7 @@ class ServiceContainer
      * @param  ?type: String        Type of events required
      * @return     Tag list
      */
-    public static function getTags(?type: String) : JsonDynamic
+    public static function getTags(?type: String) : ObjectDynamic
     {
         if (null == type) {
             return tags;

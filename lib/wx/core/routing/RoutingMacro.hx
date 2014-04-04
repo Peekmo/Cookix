@@ -1,7 +1,7 @@
 package wx.core.routing;
 
 import haxe.macro.Context;
-import wx.tools.JsonDynamic;
+import wx.tools.ObjectDynamic;
 import wx.tools.JsonParser;
 import wx.tools.StringMapWX;
 import wx.exceptions.NotFoundException;
@@ -16,14 +16,14 @@ import wx.core.config.ConfigurationMacro;
 class RoutingMacro 
 {
     /**
-     * @var configuration: JsonDynamic Application's configuration
+     * @var configuration: ObjectDynamic Application's configuration
      */
-    private static var configuration : JsonDynamic;
+    private static var configuration : ObjectDynamic;
 
     /**
-     * @var routes: JsonDynamic Routes generated
+     * @var routes: ObjectDynamic Routes generated
      */
-    private static var routes : JsonDynamic;
+    private static var routes : ObjectDynamic;
 
     /**
      * Builds routes json during Compilation
@@ -46,22 +46,22 @@ class RoutingMacro
 
     /**
      * Get routes configuration
-     * @return JsonDynamic
+     * @return ObjectDynamic
      */
-    private static function getRoutesConfiguration() : JsonDynamic
+    private static function getRoutesConfiguration() : ObjectDynamic
     {
         try {
             var content : String = sys.io.File.getContent('application/config/bundles.json');
 
-            var libs : JsonDynamic = JsonParser.decode(content);
-            var final : JsonDynamic = [];
+            var libs : ObjectDynamic = JsonParser.decode(content);
+            var final : ObjectDynamic = [];
 
             // Get config.json from each internal bundles
             for (i in libs['internals'].iterator()) {
                 var folder : String = Std.string(libs['internals'][i]).split('.').join('/');
                 var config : String = sys.io.File.getContent('src/' + folder + '/config/config.json');
 
-                var decoded : JsonDynamic = JsonParser.decode(config);
+                var decoded : ObjectDynamic = JsonParser.decode(config);
                 for (z in decoded['routing'].iterator()) {
                     var routing : String = sys.io.File.getContent('src/' + folder + '/config/' + decoded['routing'][z]);
                     final.merge(replace(JsonParser.decode(routing)));
@@ -73,7 +73,7 @@ class RoutingMacro
                 var folder : String = Std.string(libs['externals'][i]).split('.').join('/');
                 var config : String = sys.io.File.getContent('lib/' + folder + '/config/config.json');
 
-                var decoded : JsonDynamic = JsonParser.decode(config);
+                var decoded : ObjectDynamic = JsonParser.decode(config);
                 for (z in decoded['routing'].iterator()) {
                     var routing : String = sys.io.File.getContent('lib/' + folder + '/config/' + decoded['routing'][z]);
                     final.merge(replace(JsonParser.decode(routing)));
@@ -88,20 +88,20 @@ class RoutingMacro
 
     /**
      * Replaces the routes options with configuration values
-     * @param  routes: JsonDynamic routes's config file
+     * @param  routes: ObjectDynamic routes's config file
      * @return           Config replaced
      */
-    private static function replace(routes: JsonDynamic) : JsonDynamic
+    private static function replace(routes: ObjectDynamic) : ObjectDynamic
     {
         // Get parameters from routing file parameter
-        var parameters: JsonDynamic = cast getParameters(routes['parameters']);
+        var parameters: ObjectDynamic = cast getParameters(routes['parameters']);
 
         // Loop on routes to adding them into global routes's container (if there's routes)
         if (!routes.isObject() || !routes['routes'].isObject()) {
             return null;
         }
 
-        var arrRoutes : Array<JsonDynamic> = new Array<JsonDynamic>();
+        var arrRoutes : Array<ObjectDynamic> = new Array<ObjectDynamic>();
         for (route in routes['routes'].iterator()) {
             if (!routes['routes'][route].has('controller') || !routes['routes'][route].has('action')) {
                 throw new NotFoundException('Route ' + route + ' does not have controller or action specified');
@@ -140,7 +140,7 @@ class RoutingMacro
             arrRoutes.push(cast oRoute);
         }
 
-        var finalRoutes : JsonDynamic = cast []; 
+        var finalRoutes : ObjectDynamic = cast []; 
         finalRoutes = arrRoutes;
 
         return finalRoutes;
@@ -148,10 +148,10 @@ class RoutingMacro
 
     /**
      * Get parameters from a services's file
-     * @param  parameters: JsonDynamic   Parameters
-     * @return             JsonDynamic
+     * @param  parameters: ObjectDynamic   Parameters
+     * @return             ObjectDynamic
      */
-    private static function getParameters(parameters: JsonDynamic) : JsonDynamic
+    private static function getParameters(parameters: ObjectDynamic) : ObjectDynamic
     {
         for (i in parameters.iterator()) {
             if (parameters[i].isArray() || parameters[i].isObject()) {
@@ -162,7 +162,7 @@ class RoutingMacro
 
                 var elements : Array<String> = value.split('.');
 
-                var current : JsonDynamic = configuration;
+                var current : ObjectDynamic = configuration;
                 for (key in elements.iterator()) {
                     if (current.has(key)) {
                         current = current[key];

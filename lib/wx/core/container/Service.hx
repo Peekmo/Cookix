@@ -1,6 +1,6 @@
 package wx.core.container;
 
-import wx.tools.JsonDynamic;
+import wx.tools.ObjectDynamic;
 
 /**
  * Service container toolkit
@@ -31,7 +31,7 @@ class Service
      * @param  ?type: String        Type of events required
      * @return     Tag list
      */
-    public function getTags(?type : String) : JsonDynamic
+    public function getTags(?type : String) : ObjectDynamic
     {
         return ServiceContainer.getTags(type);
     }

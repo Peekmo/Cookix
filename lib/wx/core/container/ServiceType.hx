@@ -10,4 +10,5 @@ typedef ServiceType = {
     var name       : String;
     var parameters : Array<ObjectDynamic>;
     var tags       : Array<TagType>;
+    var namespace  : String;
 }

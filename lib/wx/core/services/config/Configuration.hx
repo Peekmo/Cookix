@@ -1,6 +1,6 @@
 package wx.core.services.config;
 
-import wx.tools.JsonDynamic;
+import wx.tools.ObjectDynamic;
 import wx.core.config.ConfigurationMacro;
 
 /**
@@ -12,9 +12,9 @@ import wx.core.config.ConfigurationMacro;
 class Configuration
 {
     /**
-     * @var JsonDynamic: configuration Application's configuration built with the macro
+     * @var ObjectDynamic: configuration Application's configuration built with the macro
      */
-    public var configuration(null, null) : JsonDynamic;
+    public var configuration(null, null) : ObjectDynamic;
 
     /**
      * Constructor
@@ -27,11 +27,11 @@ class Configuration
 
     /**
      * Get application's configuration ptions
-     * @return JsonDynamic
+     * @return ObjectDynamic
      */
     @:Tag({name:"ok", type:"event"})
     @:Tag({name:"ok3", type:"event"})
-    public function getConfiguration() : JsonDynamic
+    public function getConfiguration() : ObjectDynamic
     {
         return this.configuration;
     }

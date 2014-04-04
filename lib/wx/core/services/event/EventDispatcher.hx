@@ -2,7 +2,7 @@ package wx.core.events;
 
 import wx.core.container.Service;
 import haxe.ds.StringMap;
-import wx.tools.JsonDynamic;
+import wx.tools.ObjectDynamic;
 
 /**
  * Events dispatcher service. Throws events to all subscribers
@@ -30,7 +30,7 @@ class EventDispatcher
         this.container = container;
 
         this.events = new StringMap<Array<Subscriber>>();
-        var tags : JsonDynamic = this.container.getTags('event');
+        var tags : ObjectDynamic = this.container.getTags('event');
         for (i in tags.iterator()) {
             if (!this.events.exists(Std.string(i))) {
                 this.events.set(Std.string(i), new Array<Subscriber>());

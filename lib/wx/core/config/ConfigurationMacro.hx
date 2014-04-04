@@ -1,7 +1,7 @@
 package wx.core.config;
 
 import haxe.macro.Context;
-import wx.tools.JsonDynamic;
+import wx.tools.ObjectDynamic;
 import wx.tools.JsonParser;
 import wx.exceptions.NotFoundException;
 
@@ -12,19 +12,19 @@ import wx.exceptions.NotFoundException;
 class ConfigurationMacro 
 {
     /**
-     * @var configuration: JsonDynamic Full configuration
+     * @var configuration: ObjectDynamic Full configuration
      */
-    private static var configuration(null, null): JsonDynamic;
+    private static var configuration(null, null): ObjectDynamic;
 
     /**
      * Replaces the configuration options with parameters
-     * @param  config: JsonDynamic Config file
-     * @param  params: JsonDynamic Parameter file
+     * @param  config: ObjectDynamic Config file
+     * @param  params: ObjectDynamic Parameter file
      * @return         Config replaced
      */
-    private static function replace(config: JsonDynamic, params: JsonDynamic) : JsonDynamic
+    private static function replace(config: ObjectDynamic, params: ObjectDynamic) : ObjectDynamic
     {
-        for (i in config.iterator()) {
+        for (i in config.keys().iterator()) {
             if (config[i].isArray() || config[i].isObject()) {
                 config[i] = replace(config[i], params);
             } else if (Std.string(config[i]).charAt(0) == '%') {
@@ -54,8 +54,8 @@ class ConfigurationMacro
             var parameters : String = sys.io.File.getContent('application/config/parameters.json');
             var config : String = sys.io.File.getContent('application/config/config.json');
 
-            var paramObject : JsonDynamic = JsonParser.decode(parameters);
-            var confObject : JsonDynamic = JsonParser.decode(config);
+            var paramObject : ObjectDynamic = JsonParser.decode(parameters);
+            var confObject : ObjectDynamic = JsonParser.decode(config);
 
             configuration = replace(confObject, paramObject);
 

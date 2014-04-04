@@ -23,7 +23,7 @@ class Boot
         // var ctrl : wx.demo.controllers.DemoController = new wx.demo.controllers.DemoController();
         // ctrl.testAction();
 
-        // var routes : wx.tools.JsonDynamic = RoutingMacro.getRoutes();
+        // var routes : wx.tools.ObjectDynamic = RoutingMacro.getRoutes();
         // trace(routes);
 
         // var template : TemplateManager = new TemplateManager();

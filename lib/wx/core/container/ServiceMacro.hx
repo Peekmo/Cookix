@@ -1,9 +1,8 @@
 package wx.core.container;
 
 import haxe.macro.Context;
-import wx.tools.JsonDynamic;
+import wx.tools.ObjectDynamic;
 import wx.tools.JsonParser;
-import wx.tools.StringMapWX;
 import wx.exceptions.NotFoundException;
 import wx.exceptions.FileNotFoundException;
 import wx.core.config.ConfigurationMacro;
@@ -28,17 +27,17 @@ class ServiceMacro
     /**
      * Full application's configuration
      */
-    private static var configuration : JsonDynamic;
+    private static var configuration : ObjectDynamic;
 
     /**
      * Full application's services
      */
-    private static var services : Array<ServiceType>;
+    private static var services : Map<String, ServiceType>;
 
     /**
      * All tags registered on services
      */
-    private static var tags: ObjectDynamic;
+    private static var tags: Map<String, TagType>;
 
     /**
      * Builds configuration json during Compilation
@@ -47,8 +46,8 @@ class ServiceMacro
     macro public static function getServices()
     {
         if (null == services) {
-            services      = new Array<ServiceType>();
-            tags          = cast {};
+            services      = new Map<String, ServiceType>();
+            tags          = new Map<String, TagType>();
             configuration = ConfigurationMacro.getConfiguration();
 
             trace('Generating service container...');
@@ -58,7 +57,31 @@ class ServiceMacro
             trace('Service container generated');
         }
 
-        return Context.makeExpr('salut', Context.currentPos());
+        // Build the object from Map (can't return the map directly :( )
+        var obj : ObjectDynamic = cast {};
+        for (key in services.keys()) {
+            obj[key] = cast services.get(key);
+        }
+
+        return Context.makeExpr(obj, Context.currentPos());
+    }
+    /**
+     * Builds configuration json during Compilation
+     * @return Configuration
+     */
+    macro public static function getTags()
+    {
+        if (null == tags) {
+            getServices();
+        }
+
+        // Build the object from Map (can't return the map directly :( )
+        var obj : ObjectDynamic = cast {};
+        for (key in tags.keys()) {
+            obj[key] = cast tags.get(key);
+        }
+
+        return Context.makeExpr(obj, Context.currentPos());
     }
 
     /**
@@ -66,12 +89,12 @@ class ServiceMacro
      */
     private static function generateServices() : Void
     {
-        var content      : String      = File.getContent('application/config/configurations.json');
-        var dependencies : JsonDynamic = JsonParser.decode(content);
+        var content      : String        = File.getContent('application/config/configurations.json');
+        var dependencies : ObjectDynamic = JsonParser.decode(content);
 
 
-        for (i in dependencies.iterator()) {
-            parsePackageService(Std.string(dependencies[i]));
+        for (dependency in dependencies.iterator()) {
+            parsePackageService(Std.string(dependency));
         }
     }
 
@@ -82,47 +105,62 @@ class ServiceMacro
      */
     private static function parsePackageService(name : String) : Void
     {
-        var path : String = Context.resolvePath(name);
-        var values : Array<String> = path.split('/');
+        #if macro
+            var path : String = Context.resolvePath(name);
+            var values : Array<String> = path.split('/');
 
-        //Removes the last element (Configuration file name)
-        values.pop();
+            //Removes the last element (Configuration file name)
+            values.pop();
 
-        var servicesContent : String = File.getContent(values.join('/') + "/config/services.json");
+            var servicesContent : String = File.getContent(values.join('/') + "/config/services.json");
 
-        var services : Array<String> = cast JsonParser.decode(servicesContent);
+            var servicesDecoded : Array<String> = cast JsonParser.decode(servicesContent);
 
-        // Parse service
-        for (service in services.iterator()) {
-            Compiler.include(service);
+            // Parse service
+            for (service in servicesDecoded.iterator()) {
+                Compiler.include(service);
 
-            try {
-                var metadata : ClassMetadata = MacroMetadataReader.getMetadata(service);
-                parseMetadata(metadata);
-            } catch (ex: ServiceCompilerException) {
-                throw new ServiceCompilerException(service + ' : ' + ex.message);
-            } catch (ex: NotFoundException) {
-                throw new NotFoundException(service + ' : ' + ex.message);
-            } catch (ex: InvalidArgumentException) {
-                throw new InvalidArgumentException(service + ' : ' + ex.message);
+                try {
+                    var metadata : ClassMetadata = MacroMetadataReader.getMetadata(service);
+                    var serviceCreated : ServiceType = parseMetadata(metadata);
+                    serviceCreated.namespace = service;
+
+                    services.set(serviceCreated.name, serviceCreated);
+                    
+                    // Add tags
+                    for (tag in serviceCreated.tags.iterator()) {
+                        tag.namespace = service;
+                        tags.set(tag.name, tag);
+                    }
+                } catch (ex: ServiceCompilerException) {
+                    throw new ServiceCompilerException(service + ' : ' + ex.message);
+                } catch (ex: NotFoundException) {
+                    throw new NotFoundException(service + ' : ' + ex.message);
+                } catch (ex: InvalidArgumentException) {
+                    throw new InvalidArgumentException(service + ' : ' + ex.message);
+                }
             }
-        }
+        #else
+            throw "You can't parse package service from outside a macro";
+        #end
     }
 
     /**
      * Parse class metadata to build the service container
      * @param  serviceClass : ClassMetadata Service to parse
      * @throws ServiceCompilerException
+     * @return Service created
      */
-    private static function parseMetadata(serviceClass : ClassMetadata) : Void
+    private static function parseMetadata(serviceClass : ClassMetadata) : ServiceType
     {
         var service : ServiceType = {
-            name : parseServiceName(serviceClass.global),
+            name       : parseServiceName(serviceClass.global),
             parameters : parseServiceParameters(serviceClass.global),
-            tags : parseServiceTags(serviceClass.methods)
+            tags       : parseServiceTags(serviceClass.methods),
+            namespace  : ""
         };
 
-        trace(service);
+        return service;
     }
 
     /**
@@ -186,7 +224,7 @@ class ServiceMacro
      */
     public static function parseServiceTags(serviceMethods : Map<String, Metadata>) : Array<TagType>
     {
-        var tags : Array<TagType> = new Array<TagType>();
+        var serviceTags : Array<TagType> = new Array<TagType>();
 
         for (methodName in serviceMethods.keys()) {
             var tagsDeclaration : Array<MetadataType> = serviceMethods.get(methodName).getAll('Tag'); 
@@ -204,14 +242,15 @@ class ServiceMacro
                     throw new InvalidArgumentException("Invalid tag structure", false);
                 }
 
-                var tag = cast declaration.params[0];
-                tag.method = methodName;
+                var tag       = cast declaration.params[0];
+                tag.method    = methodName;
+                tag.namespace = "";
 
-                tags.push(tag);
+                serviceTags.push(tag);
             }
         }
         
-        return tags;
+        return serviceTags;
     }
 
     /**
@@ -234,21 +273,21 @@ class ServiceMacro
 
     // /**
     //  * Get internal services configuration
-    //  * @return JsonDynamic
+    //  * @return ObjectDynamic
     //  */
-    // private static function getServicesConfiguration() : JsonDynamic
+    // private static function getServicesConfiguration() : ObjectDynamic
     // {
     //     try {
     //         var content : String = sys.io.File.getContent('application/config/bundles.json');
 
-    //         var libs : JsonDynamic = JsonParser.decode(content);
-    //         var final : JsonDynamic = {};
+    //         var libs : ObjectDynamic = JsonParser.decode(content);
+    //         var final : ObjectDynamic = {};
 
     //         // Get config.json from each internal bundles
     //         for (i in libs['internals'].iterator()) {
     //             var folder : String = Std.string(libs['internals'][i]).split('.').join('/');
     //             var config : String = sys.io.File.getContent('src/' + folder + '/config/config.json');
-    //             var decoded : JsonDynamic = JsonParser.decode(config);
+    //             var decoded : ObjectDynamic = JsonParser.decode(config);
 
     //             // Get parameters
     //             for (z in decoded['services'].iterator()) {
@@ -262,7 +301,7 @@ class ServiceMacro
     //             var folder : String = Std.string(libs['externals'][i]).split('.').join('/');
     //             var config : String = sys.io.File.getContent('lib/' + folder + '/config/config.json');
 
-    //             var decoded : JsonDynamic = JsonParser.decode(config);
+    //             var decoded : ObjectDynamic = JsonParser.decode(config);
     //             for (z in decoded['services'].iterator()) {
     //                 var services : String = sys.io.File.getContent('lib/' + folder + '/config/' + decoded['services'][z]);
     //                 final.merge(replace(JsonParser.decode(services)));
@@ -277,17 +316,17 @@ class ServiceMacro
 
     // *
     //  * Replaces the services options with configuration values
-    //  * @param  services: JsonDynamic Services's config file
+    //  * @param  services: ObjectDynamic Services's config file
     //  * @return           Config replaced
      
-    // private static function replace(services: JsonDynamic) : JsonDynamic
+    // private static function replace(services: ObjectDynamic) : ObjectDynamic
     // {
     //     // Loop on services to dding them into global service's container (if there's services)
     //     if (!services.isObject() || !services['services'].isArray()) {
     //         return null;
     //     }
 
-    //     var servConfiguration : JsonDynamic = {};
+    //     var servConfiguration : ObjectDynamic = {};
     //     for (i in services['services'].iterator()) {
     //         var service = services['services'][i];
 
@@ -295,7 +334,7 @@ class ServiceMacro
     //             throw new NotFoundException('A service without id has been found');
     //         }
 
-    //         var config : JsonDynamic = { 
+    //         var config : ObjectDynamic = { 
     //             service: service['class'], 
     //             parameters : service['parameters']
     //         };

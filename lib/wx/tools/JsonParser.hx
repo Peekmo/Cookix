@@ -9,22 +9,22 @@ import haxe.Json;
 class JsonParser
 {
     /**
-     * Get the given string into a JsonDynamic object
+     * Get the given string into a ObjectDynamic object
      * @param  json: String        Json to decode
-     * @return       JsonDynamic
+     * @return       ObjectDynamic
      */
-    public static function decode(json: String) : JsonDynamic
+    public static function decode(json: String) : ObjectDynamic
     {
-        var json : JsonDynamic = Json.parse(json);
+        var json : ObjectDynamic = Json.parse(json);
         return json;
     }
 
     /**
-     * Encode the given JsonDynamic object to a json string
-     * @param  jsonDynamic: JsonDynamic   Object to encode
+     * Encode the given ObjectDynamic object to a json string
+     * @param  jsonDynamic: ObjectDynamic   Object to encode
      * @return              String
      */
-    public static function encode(jsonDynamic: JsonDynamic) : String 
+    public static function encode(jsonDynamic: ObjectDynamic) : String 
     {
         return Json.stringify(jsonDynamic);
     }

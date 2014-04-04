@@ -1,9 +1,3 @@
 {
-    "routing": [
-        "routing.json"
-    ],
 
-    "services": [
-        "services.json"
-    ]
 }

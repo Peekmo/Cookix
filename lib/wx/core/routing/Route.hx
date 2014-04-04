@@ -1,7 +1,7 @@
 package wx.core.routing;
 
 import haxe.ds.StringMap;
-import wx.tools.JsonDynamic;
+import wx.tools.ObjectDynamic;
 
 /**
  * Route data structure
@@ -25,9 +25,9 @@ class Route
     public var action(default, default): String;
 
     /**
-     * @var requirements: JsonDynamic Requirements on route / request
+     * @var requirements: ObjectDynamic Requirements on route / request
      */
-    public var requirements(default, null): JsonDynamic;
+    public var requirements(default, null): ObjectDynamic;
 
     /**
      * @var routing: StringMap<String> Routing parameters 
@@ -40,7 +40,7 @@ class Route
      * @param  controller: String        Controller of the route
      * @param  action:     String        Action to execute on the controller
      */
-    public function new(route: String, controller: String, action: String, ?requirements: JsonDynamic)
+    public function new(route: String, controller: String, action: String, ?requirements: ObjectDynamic)
     {
         this.route = route;
         this.controller = controller;
