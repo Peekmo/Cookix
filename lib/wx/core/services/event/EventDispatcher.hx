@@ -8,6 +8,7 @@ import wx.tools.JsonDynamic;
  * Events dispatcher service. Throws events to all subscribers
  * @author Axel Anceau (Peekmo)
  */
+@:Service('wx.dispatcher')
 class EventDispatcher 
 {
     /**

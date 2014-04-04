@@ -1,9 +1,10 @@
-package wx.core.context;
+package wx.core.services.context;
 
 /**
  * Context's service - Various informations through the request
  * @author Axel Anceau (Peekmo)
  */
+@:Service('wx.context')
 class Context 
 {
     /**

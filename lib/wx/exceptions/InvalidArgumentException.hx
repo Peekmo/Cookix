@@ -11,8 +11,8 @@ class InvalidArgumentException extends Exception
      * @param  ?message: String        Exception's message
      * @param  ?code:    Int           Error code
      */
-    public function new(?message: String = 'Invalid argument exception', ?code: Int = 412)
+    public function new(?message: String = 'Invalid argument exception', ?code: Int = 412, ?tracing: Bool = true)
     {
-        super(message, code);
+        super(message, code, tracing);
     }
 }

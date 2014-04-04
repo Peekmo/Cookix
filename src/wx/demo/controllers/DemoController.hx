@@ -12,6 +12,7 @@ class DemoController extends wx.core.controller.Controller
     /**
      * Simple action
      */
+    @:Route('/test')
     public function testAction()
     {
         this.container.get('wx.dispatcher').dispatch('test', 'test');
@@ -28,3 +29,5 @@ class DemoController extends wx.core.controller.Controller
         return response;
     }
 }
+
+// haxe.rtti.Meta

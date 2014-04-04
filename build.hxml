@@ -1,10 +1,9 @@
--cmd "neko wxcommands.n build"
---next
+# -cmd "neko wxcommands.n build"
 -main Boot
 -php /var/www/WhaXe
 #-neko /var/www/Neko/index.n
 -cp src/
 -cp lib/
 -cp application/
--cmd "cp -R src/wx/demo/templates/ /var/www/WhaXe/"
+# -cmd "cp -R src/wx/demo/templates/ /var/www/WhaXe/"
 #--no-traces

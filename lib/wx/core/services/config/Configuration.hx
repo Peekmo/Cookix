@@ -1,11 +1,14 @@
-package wx.core.config;
+package wx.core.services.config;
 
 import wx.tools.JsonDynamic;
+import wx.core.config.ConfigurationMacro;
 
 /**
  * Configuration checker
  * @author Axel Anceau (Peekmo)
  */
+@:Service("woox.configuration")
+@:Parameters("a", "b")
 class Configuration
 {
     /**
@@ -26,8 +29,16 @@ class Configuration
      * Get application's configuration ptions
      * @return JsonDynamic
      */
+    @:Tag({name:"ok", type:"event"})
+    @:Tag({name:"ok3", type:"event"})
     public function getConfiguration() : JsonDynamic
     {
         return this.configuration;
+    }
+
+    @:Tag({name:"ok2", type:"event"})
+    public function test() : String
+    {
+        return "ok";
     }
 }

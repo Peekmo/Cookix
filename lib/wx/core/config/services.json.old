@@ -1,0 +1,40 @@
+{
+    "parameters": {
+        "env": "%general.env%"
+    },
+
+    "services": [
+        {
+            "id": "wx.configuration",
+            "class": "wx.core.config.Configuration"
+        },
+        {
+            "id": "wx.routing",
+            "class": "wx.core.routing.Routing",
+            "parameters": [
+                "@wx.context@"
+            ]
+        },
+        {
+            "id": "wx.resolver",
+            "class": "wx.core.controller.Resolver",
+            "parameters": [
+                "@wx.dispatcher@"
+            ]
+        },
+        {
+            "id": "wx.context",
+            "class": "wx.core.context.Context",
+            "parameters": [
+                "%env%"
+            ]
+        },
+        {
+            "id": "wx.dispatcher",
+            "class": "wx.core.events.EventDispatcher",
+            "parameters": [
+                "@wx.container@"
+            ]
+        }
+    ]
+}

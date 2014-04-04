@@ -14,11 +14,13 @@ class Exception
      * @param  ?message: String        Exception's message
      * @param  ?code:    Int           Error code
      */
-    public function new(?message: String = 'An error occured', ?code: Int = 500)
+    public function new(?message: String = 'An error occured', ?code: Int = 500, ?tracing: Bool = true)
     {
         this.message = message;
         this.code = code;
 
-        trace('Exception [ '+ this.code +' ]' + ' : ' + this.message);
+        if (tracing) {
+            trace('Exception [ '+ this.code +' ]' + ' : ' + this.message);
+        }
     }
 }

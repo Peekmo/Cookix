@@ -1,13 +1,17 @@
-package wx.core.routing;
+package wx.core.services.routing;
 
 import wx.exceptions.NotFoundException;
-import wx.core.context.Context;
+import wx.core.services.context.Context;
 import wx.core.http.parameters.RoutingParameters;
+import wx.core.routing.Route;
+import wx.core.routing.RoutingMacro;
 
 /**
  * General routing used by the router (Service)
  * @author Axel Anceau (Peekmo)
  */
+@service("wx.routing")
+@arguments("@wx.context")
 class Routing
 {
     /**

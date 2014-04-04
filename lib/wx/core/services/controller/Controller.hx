@@ -6,7 +6,8 @@ import wx.core.container.Service;
  * Controller to extends to get all tools
  * @author Axel Anceau (Peekmo)
  */
-@:keepSub class Controller
+@:Service('wx.resolver')
+class Controller
 {
     /**
      * @var container: ServiceContainer Contains all services (instanciated or not)

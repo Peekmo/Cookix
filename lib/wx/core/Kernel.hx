@@ -30,7 +30,7 @@ class Kernel
         var response = container.get('wx.resolver').resolve(route);
 
         // Dispatch kernel resposne
-        container.get('wx.dispatcher').dispatch('wx.onRequest', new ResponseEvent(response));
+        container.get('wx.dispatcher').dispatch('wx.onResponse', new ResponseEvent(response));
 
         // Render the response
         response.render();

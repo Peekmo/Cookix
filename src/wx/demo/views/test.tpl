@@ -7,7 +7,7 @@
 <body>
 <br/>
 <section class="container well">
-    My name is <strong>::name::</strong> and I'm <em>::age::</em> years old.
+    My name is <strong>{{ name }}</strong>
 </section>
 
 </body>

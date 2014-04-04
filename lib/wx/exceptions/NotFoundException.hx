@@ -11,8 +11,8 @@ class NotFoundException extends Exception
      * @param  ?message: String        Exception's message
      * @param  ?code:    Int           Error code
      */
-    public function new(?message: String = 'Not found', ?code: Int = 404)
+    public function new(?message: String = 'Not found', ?code: Int = 404, ?tracing: Bool = true)
     {
-        super(message, code);
+        super(message, code, tracing);
     }
 }
