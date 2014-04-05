@@ -34,4 +34,26 @@ class FolderReader
 
         return files;
     }
+
+    /**
+     * Get a file path relative to a class path
+     * @param  classPath : String Class path to start from
+     * @return Complete file path
+     */
+    public static function getFileFromClassPath(classPath : String, relativePath: String) : String
+    {
+        #if macro
+            var path : String = haxe.macro.Context.resolvePath(classPath);
+            var values : Array<String> = path.split('/');
+
+            //Removes the last element (Class file name file name)
+            values.pop();
+
+            return values.join('/') + relativePath;
+        #else 
+            throw "Method unsupported outside a macro";
+        #end
+
+        return null;
+    }
 }

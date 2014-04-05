@@ -1,7 +1,7 @@
 package wx.tools;
 
 import wx.exceptions.ExistsException;
-
+import haxe.ds.StringMap;
 
 /**
  * ObjectDynamic class to use structured objects
@@ -222,11 +222,11 @@ abstract ObjectDynamic(Dynamic) from Dynamic
     }
 
     /**
-     * Merge the current map with the given one
+     * Merge the current map with the given one (set force to true if you want to erase an existing value)
      * @throws wx.exceptions.ExistsException On same key
      * @param  map: StringMapWX<T> StringMapWX to merge
      */
-    public function merge(map: ObjectDynamic)
+    public function merge(map: ObjectDynamic, ?force: Bool = false) : Void
     {
         if (null == map) {
             return;
@@ -242,7 +242,7 @@ abstract ObjectDynamic(Dynamic) from Dynamic
             }
         } else {
             for (key in map.keys()) {
-                if (has(key)) {
+                if (has(key) && false == force) {
                     throw new ExistsException('Can\'t merge this arrays. ['+ key +'] key is in common');
                 }
 
@@ -272,5 +272,37 @@ abstract ObjectDynamic(Dynamic) from Dynamic
         } 
       
         return simpleIterator;
+    }
+
+
+    /**
+     * Get the plane representation of the current object
+     * eg: { x : { a : b } }
+     * => x.a => b
+     * @return Map<String, ObjectDynamic>
+     */
+    public function getPlaneRepresentation() : Map<String, ObjectDynamic>
+    {
+        var map : StringMap<ObjectDynamic> = new StringMap<ObjectDynamic>();
+        getRepresentation(map);
+
+        return map;
+    }
+
+    private function getRepresentation(map : StringMap<ObjectDynamic>, ?obj : ObjectDynamic, ?key : String) : Void
+    {
+        if (null == key) {
+            obj = this;
+            key = "";
+        }
+
+        for (k in obj.keys().iterator()) {
+            var currKey = "" == key ? k : key + "." + k; 
+            map.set(currKey, obj[k]);        
+
+            if (obj[k].isArray() || obj[k].isObject()) {
+                getRepresentation(map, obj[k], currKey);
+            }
+        }
     }
 }

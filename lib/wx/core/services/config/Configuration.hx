@@ -8,7 +8,6 @@ import wx.core.config.ConfigurationMacro;
  * @author Axel Anceau (Peekmo)
  */
 @:Service("woox.configuration")
-@:Parameters("a", "b")
 class Configuration
 {
     /**
@@ -29,16 +28,8 @@ class Configuration
      * Get application's configuration ptions
      * @return ObjectDynamic
      */
-    @:Tag({name:"ok", type:"event"})
-    @:Tag({name:"ok3", type:"event"})
     public function getConfiguration() : ObjectDynamic
     {
         return this.configuration;
-    }
-
-    @:Tag({name:"ok2", type:"event"})
-    public function test() : String
-    {
-        return "ok";
     }
 }

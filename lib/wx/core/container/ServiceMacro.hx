@@ -15,6 +15,7 @@ import wx.tools.macro.MetadataType;
 import wx.exceptions.ServiceCompilerException;
 import wx.tools.ObjectDynamic;
 import wx.exceptions.InvalidArgumentException;
+import wx.tools.FolderReader;
 
 /**
  * Parse services's files and create the service container
@@ -27,7 +28,7 @@ class ServiceMacro
     /**
      * Full application's configuration
      */
-    private static var configuration : ObjectDynamic;
+    private static var configuration : haxe.ds.StringMap<ObjectDynamic>;
 
     /**
      * Full application's services
@@ -48,7 +49,9 @@ class ServiceMacro
         if (null == services) {
             services      = new Map<String, ServiceType>();
             tags          = new Map<String, TagType>();
-            configuration = ConfigurationMacro.getConfiguration();
+
+            var dynamicConfig : ObjectDynamic = ConfigurationMacro.getConfiguration();
+            configuration = dynamicConfig.getPlaneRepresentation();
 
             trace('Generating service container...');
 
@@ -89,7 +92,7 @@ class ServiceMacro
      */
     private static function generateServices() : Void
     {
-        var content      : String        = File.getContent('application/config/configurations.json');
+        var content      : String        = File.getContent('application/config/bundles.json');
         var dependencies : ObjectDynamic = JsonParser.decode(content);
 
 
@@ -106,13 +109,7 @@ class ServiceMacro
     private static function parsePackageService(name : String) : Void
     {
         #if macro
-            var path : String = Context.resolvePath(name);
-            var values : Array<String> = path.split('/');
-
-            //Removes the last element (Configuration file name)
-            values.pop();
-
-            var servicesContent : String = File.getContent(values.join('/') + "/config/services.json");
+            var servicesContent : String = File.getContent(FolderReader.getFileFromClassPath(name, "/config/services.json"));
 
             var servicesDecoded : Array<String> = cast JsonParser.decode(servicesContent);
 
@@ -190,7 +187,7 @@ class ServiceMacro
             throw new InvalidArgumentException("Invalid service name, should be string", false);
         }
 
-        return Std.string(name);
+        return Std.string(replace(name));
     }
     
     /**
@@ -211,7 +208,7 @@ class ServiceMacro
         }
 
         for (param in declaration.params.iterator()) {
-            parameters.push(param);
+            parameters.push(replace(param));
         } 
 
         return parameters;
@@ -246,6 +243,8 @@ class ServiceMacro
                 tag.method    = methodName;
                 tag.namespace = "";
 
+                tag.name = Std.string(replace(cast tag.name));
+
                 serviceTags.push(tag);
             }
         }
@@ -254,133 +253,26 @@ class ServiceMacro
     }
 
     /**
-     * Get given tags from services
-     * @param  ?type: String        Tag's type required
-     * @return        Tags
+     * Replace the content of the given object by a configuration's parameter (if needed)
+     * @param  config : ObjectDynamic Value to override
+     * @return Object modified
      */
-    // macro public static function getTags(?type: String)
-    // {
-    //     if (null == tags) {
-    //         getServices();
-    //     }
+    private static function replace(config : ObjectDynamic) : ObjectDynamic
+    {
+        for (i in config.keys().iterator()) {
+            if (config[i].isArray() || config[i].isObject()) {
+                config[i] = replace(config[i]);
+            } else if (Std.string(config[i]).charAt(0) == '%' && Std.string(config[i]).charAt(Std.string(config[i]).length - 1) == '%') {
+                var value : String = Std.string(config[i]).substr(1, Std.string(config[i]).length - 2);
 
-    //     if (null == type) {
-    //         return Context.makeExpr(tags, Context.currentPos());
-    //     }
+                if (configuration.exists(value)) {
+                    config = configuration.get(value);
+                } else {
+                    throw new NotFoundException('Parameter '+ value +' does not exists');
+                }
+            }
+        }
 
-    //     return Context.makeExpr(tags[type], Context.currentPos());
-    // }
-
-    // /**
-    //  * Get internal services configuration
-    //  * @return ObjectDynamic
-    //  */
-    // private static function getServicesConfiguration() : ObjectDynamic
-    // {
-    //     try {
-    //         var content : String = sys.io.File.getContent('application/config/bundles.json');
-
-    //         var libs : ObjectDynamic = JsonParser.decode(content);
-    //         var final : ObjectDynamic = {};
-
-    //         // Get config.json from each internal bundles
-    //         for (i in libs['internals'].iterator()) {
-    //             var folder : String = Std.string(libs['internals'][i]).split('.').join('/');
-    //             var config : String = sys.io.File.getContent('src/' + folder + '/config/config.json');
-    //             var decoded : ObjectDynamic = JsonParser.decode(config);
-
-    //             // Get parameters
-    //             for (z in decoded['services'].iterator()) {
-    //                 var services : String = sys.io.File.getContent('src/' + folder + '/config/' + decoded['services'][z]);
-    //                 final.merge(replace(JsonParser.decode(services)));
-    //             }
-    //         }
-
-    //         // Get config.json from each external bundles
-    //         for (i in libs['externals'].iterator()) {
-    //             var folder : String = Std.string(libs['externals'][i]).split('.').join('/');
-    //             var config : String = sys.io.File.getContent('lib/' + folder + '/config/config.json');
-
-    //             var decoded : ObjectDynamic = JsonParser.decode(config);
-    //             for (z in decoded['services'].iterator()) {
-    //                 var services : String = sys.io.File.getContent('lib/' + folder + '/config/' + decoded['services'][z]);
-    //                 final.merge(replace(JsonParser.decode(services)));
-    //             }
-    //         }
-
-    //         return final;
-    //     } catch (ex: String) {
-    //         throw new FileNotFoundException('No bundles configuration found (' + ex.split(':')[0] +')');
-    //     }
-    // }
-
-    // *
-    //  * Replaces the services options with configuration values
-    //  * @param  services: ObjectDynamic Services's config file
-    //  * @return           Config replaced
-     
-    // private static function replace(services: ObjectDynamic) : ObjectDynamic
-    // {
-    //     // Loop on services to dding them into global service's container (if there's services)
-    //     if (!services.isObject() || !services['services'].isArray()) {
-    //         return null;
-    //     }
-
-    //     var servConfiguration : ObjectDynamic = {};
-    //     for (i in services['services'].iterator()) {
-    //         var service = services['services'][i];
-
-    //         if (null == service['id'] || null == service['class']) {
-    //             throw new NotFoundException('A service without id has been found');
-    //         }
-
-    //         var config : ObjectDynamic = { 
-    //             service: service['class'], 
-    //             parameters : service['parameters']
-    //         };
-
-
-    //         // Replaces service's parameters
-    //         for (z in config['parameters'].iterator()) {
-    //             var key : String = Std.string(config['parameters'][z]);
-    //             if (key.charAt(0) == '%' && key.charAt(key.length - 1) == '%') {
-    //                 var value : String = Std.string(config['parameters'][z]).substr(1, Std.string(config['parameters'][z]).length - 2);
-
-    //                 if (parameters.has(value)) {
-    //                     config['parameters'][z] = parameters[value];
-    //                 } else {
-    //                     throw new NotFoundException('Parameter '+ value +' does not exists');
-    //                 }
-    //             }
-    //         }
-
-    //         if (null == config['parameters']) {
-    //             config.delete('parameters');
-    //         }
-
-    //         if (service.has('tags')) {
-    //             var sTags = service['tags'];
-    //             config['tags'] = sTags;
-
-    //             // Get tags
-    //             for (i in sTags.iterator()) {
-    //                 var key: String = Std.string(sTags[i]['type']);
-    //                 var tag: String = Std.string(sTags[i]['tag']);
-
-    //                 // Adding services informations
-    //                 sTags[i]['service'] = Std.string(service['id']);
-
-    //                 if (!tags.has(key)) {
-    //                     tags[key] = cast {};
-    //                 }
-
-    //                 tags[key][tag] = sTags[i];
-    //             }
-    //         }
-
-    //         servConfiguration[Std.string(service['id'])] = config;
-    //     }
-
-    //     return servConfiguration;
-    // }
+        return config;
+    }
 }
