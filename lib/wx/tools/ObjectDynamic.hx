@@ -289,6 +289,12 @@ abstract ObjectDynamic(Dynamic) from Dynamic
         return map;
     }
 
+    /**
+     * Get a plane representation by key
+     * @param  map  : StringMap<ObjectDynamic> Map to fill
+     * @param  ?obj : ObjectDynamic            Current object
+     * @param  ?key : String                   Current key
+     */
     private function getRepresentation(map : StringMap<ObjectDynamic>, ?obj : ObjectDynamic, ?key : String) : Void
     {
         if (null == key) {
@@ -296,12 +302,23 @@ abstract ObjectDynamic(Dynamic) from Dynamic
             key = "";
         }
 
-        for (k in obj.keys().iterator()) {
-            var currKey = "" == key ? k : key + "." + k; 
-            map.set(currKey, obj[k]);        
+        if (obj.isObject()) {
+            for (k in obj.keys().iterator()) {
+                var currKey = "" == key ? k : key + "." + k; 
+                map.set(currKey, obj[k]);        
 
-            if (obj[k].isArray() || obj[k].isObject()) {
-                getRepresentation(map, obj[k], currKey);
+                if (obj[k].isArray() || obj[k].isObject()) {
+                    getRepresentation(map, obj[k], currKey);
+                }
+            }
+        } else if (obj.isArray()) {
+            for (i in 0...obj.size()) {
+                var currKey = "" == key ? "[" + i + "]" : key + "[" + i + "]"; 
+                map.set(currKey, obj[i]);        
+
+                if (obj[i].isArray() || obj[i].isObject()) {
+                    getRepresentation(map, obj[i], currKey);
+                }
             }
         }
     }

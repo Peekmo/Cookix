@@ -36,9 +36,15 @@ class ConfigurationMacro
         }
 
         for (i in config.keys().iterator()) {
-            if (config[i].isArray() || config[i].isObject()) {
+            if (config[i].isObject()) {
                 if (null == fullConf[i]) {
                     fullConf[i] = cast {};
+                }
+
+                config[i] = replace(config[i], params, fullConf[i]);
+            } else if (config[i].isArray()) {
+                if (null == fullConf[i]) {
+                    fullConf[i] = cast [];
                 }
 
                 config[i] = replace(config[i], params, fullConf[i]);
