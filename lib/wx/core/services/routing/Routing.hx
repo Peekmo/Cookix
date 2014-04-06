@@ -10,8 +10,8 @@ import wx.core.routing.RoutingMacro;
  * General routing used by the router (Service)
  * @author Axel Anceau (Peekmo)
  */
-@service("wx.routing")
-@arguments("@wx.context")
+@:Service("wx.routing")
+@:Parameters("@wx.context")
 class Routing
 {
     /**

@@ -7,7 +7,7 @@ import wx.core.config.ConfigurationMacro;
  * Configuration checker
  * @author Axel Anceau (Peekmo)
  */
-@:Service("woox.configuration")
+@:Service("wx.configuration")
 class Configuration
 {
     /**

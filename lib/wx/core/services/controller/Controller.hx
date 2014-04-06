@@ -1,4 +1,4 @@
-package wx.core.controller;
+package wx.core.services.controller;
 
 import wx.core.container.Service;
 

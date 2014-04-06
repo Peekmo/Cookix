@@ -1,8 +1,9 @@
-package wx.core.events;
+package wx.core.services.event;
 
 import wx.core.container.Service;
 import haxe.ds.StringMap;
 import wx.tools.ObjectDynamic;
+import wx.core.events.Subscriber;
 
 /**
  * Events dispatcher service. Throws events to all subscribers
@@ -31,7 +32,8 @@ class EventDispatcher
 
         this.events = new StringMap<Array<Subscriber>>();
         var tags : ObjectDynamic = this.container.getTags('event');
-        for (i in tags.iterator()) {
+/**
+        for (i in tags.keys().iterator()) {
             if (!this.events.exists(Std.string(i))) {
                 this.events.set(Std.string(i), new Array<Subscriber>());
             }
@@ -40,7 +42,7 @@ class EventDispatcher
                 service: Std.string(tags[i]['service']), 
                 method: Std.string(tags[i]['method'])
             });
-        }
+        } */
     }
 
     /**
@@ -48,6 +50,7 @@ class EventDispatcher
      * @param  tag:   String        Tag of the event (to find subscribers)
      * @param  event: Dynamic       Event object
      */
+    @:Tag({name: "cool", type: "event"})
     public function dispatch(tag: String, event: Dynamic) : Void
     {
         var listeners : Array<Subscriber> = this.events.get(tag);

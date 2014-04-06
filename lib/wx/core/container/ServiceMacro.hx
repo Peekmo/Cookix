@@ -72,7 +72,7 @@ class ServiceMacro
      * Builds configuration json during Compilation
      * @return Configuration
      */
-    macro public static function getTags()
+    macro public static function getTags(?type : haxe.macro.Expr.ExprOf<String>)
     {
         if (null == tags) {
             getServices();
@@ -81,9 +81,12 @@ class ServiceMacro
         // Build the object from Map (can't return the map directly :( )
         var obj : ObjectDynamic = cast {};
         for (key in tags.keys()) {
-            obj[key] = cast tags.get(key);
+            trace(Std.string(type));
+            if ((null != type && tags.get(key).type == Std.string(type)) || null == type) {
+                obj[key] = cast tags.get(key);
+            }
         }
-
+trace(obj);
         return Context.makeExpr(obj, Context.currentPos());
     }
 

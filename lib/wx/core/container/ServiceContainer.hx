@@ -58,9 +58,9 @@ class ServiceContainer
 
         // Iterate through parameters to build the parameter's array
         if (services[service].has('parameters')) {
-            for (s in services[service]['parameters'].iterator()) {
+            for (s in services[service]['parameters'].keys().iterator()) {
                 var key : String = Std.string(services[service]['parameters'][s]);
-                if (key.charAt(0) == '@' && key.charAt(key.length - 1) == '@') {
+                if (key.charAt(0) == '@') {
                     var value : String = Std.string(services[service]['parameters'][s]).substr(1, Std.string(services[service]['parameters'][s]).length - 2);
 
                     var serviceParameter : Dynamic = get(value);
@@ -84,11 +84,7 @@ class ServiceContainer
      */
     public static function getTags(?type: String) : ObjectDynamic
     {
-        if (null == type) {
-            return tags;
-        }
-
-        return tags[type];
+        return ServiceMacro.getTags(type);
     }
 
     /**
@@ -100,3 +96,4 @@ class ServiceContainer
         tags = ServiceMacro.getTags();
     }
 }
+
