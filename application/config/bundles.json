@@ -1,3 +1,4 @@
 [
-    "wx/core/Configuration.hx"
+    "wx/core/Configuration.hx",
+    "wx/demo/Configuration.hx"
 ]

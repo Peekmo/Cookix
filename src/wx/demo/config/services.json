@@ -1,19 +1,3 @@
-{
-    "parameters": {
-        "stringToInject": "%general.env%"
-    },
+[
 
-    "services": [
-        {
-            "id": "demo_service",
-            "class": "wx.demo.services.DemoService",
-            "parameters": [
-                "%stringToInject%",
-                "@wx.configuration@"
-            ],
-            "tags": [
-                {"type":"event", "tag": "test", "method": "onEvent"}
-            ]
-        }
-    ]
-}
+]

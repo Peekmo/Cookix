@@ -16,7 +16,7 @@ class Boot
         // var request = Request.create();
         // Kernel.handle(request);
         //trace(wx.config.ConfigurationMacro.getConfiguration());
-        trace(wx.core.container.ServiceMacro.getServices());
+        trace(wx.core.container.ServiceContainer.getTags());
 
         // ServiceContainer.get('demo_service').test();
 
