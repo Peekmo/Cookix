@@ -26,11 +26,6 @@ import cookix.tools.FolderReader;
 class ServiceMacro 
 {
     /**
-     * Full application's configuration
-     */
-    private static var configuration : haxe.ds.StringMap<ObjectDynamic>;
-
-    /**
      * Full application's services
      */
     private static var services : Map<String, ServiceType>;
@@ -49,9 +44,6 @@ class ServiceMacro
         if (null == services) {
             services      = new Map<String, ServiceType>();
             tags          = new Map<String, Array<TagType>>();
-
-            var dynamicConfig : ObjectDynamic = ConfigurationMacro.getConfiguration();
-            configuration = dynamicConfig.getPlaneRepresentation();
 
             trace('Generating service container...');
 
@@ -117,6 +109,7 @@ class ServiceMacro
 
             // Parse service
             for (service in servicesDecoded.iterator()) {
+                // Adds service to the included classes
                 Compiler.include(service);
 
                 try {
@@ -194,7 +187,7 @@ class ServiceMacro
             throw new InvalidArgumentException("Invalid service name, should be string", false);
         }
 
-        return Std.string(replace(name));
+        return Std.string(ConfigurationMacro.replace(name));
     }
     
     /**
@@ -215,7 +208,7 @@ class ServiceMacro
         }
 
         for (param in declaration.params.iterator()) {
-            parameters.push(replace(param));
+            parameters.push(ConfigurationMacro.replace(param));
         } 
 
         return parameters;
@@ -250,36 +243,12 @@ class ServiceMacro
                 tag.method  = methodName;
                 tag.service = "";
 
-                tag.name = Std.string(replace(cast tag.name));
+                tag.name = Std.string(ConfigurationMacro.replace(cast tag.name));
 
                 serviceTags.push(tag);
             }
         }
         
         return serviceTags;
-    }
-
-    /**
-     * Replace the content of the given object by a configuration's parameter (if needed)
-     * @param  config : ObjectDynamic Value to override
-     * @return Object modified
-     */
-    private static function replace(config : ObjectDynamic) : ObjectDynamic
-    {
-        for (i in config.keys().iterator()) {
-            if (config[i].isArray() || config[i].isObject()) {
-                config[i] = replace(config[i]);
-            } else if (Std.string(config[i]).charAt(0) == '%' && Std.string(config[i]).charAt(Std.string(config[i]).length - 1) == '%') {
-                var value : String = Std.string(config[i]).substr(1, Std.string(config[i]).length - 2);
-
-                if (configuration.exists(value)) {
-                    config = configuration.get(value);
-                } else {
-                    throw new NotFoundException('Parameter '+ value +' does not exists');
-                }
-            }
-        }
-
-        return config;
     }
 }

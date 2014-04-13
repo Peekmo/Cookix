@@ -12,5 +12,6 @@ Roadmap
 - Refactoring routing using metadata (macro)
 - Manage tags priority
 - First documentations
+- Commands tool (with dump conf/services/routes commands)
 
 Next steps are not defined for the moment, feel free to contact me if you want to learn more about this project ;)

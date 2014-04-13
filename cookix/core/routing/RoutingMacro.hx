@@ -3,11 +3,20 @@ package cookix.core.routing;
 import haxe.macro.Context;
 import cookix.tools.ObjectDynamic;
 import cookix.tools.JsonParser;
-import cookix.tools.StringMapWX;
 import cookix.exceptions.NotFoundException;
 import cookix.exceptions.FileNotFoundException;
-import cookix.exceptions.InvalidArgumentException;
 import cookix.core.config.ConfigurationMacro;
+import sys.io.File;
+import haxe.macro.Compiler;
+import cookix.tools.macro.MacroMetadataReader;
+import cookix.tools.macro.ClassMetadata;
+import cookix.tools.macro.Metadata;
+import cookix.tools.macro.MetadataType;
+import cookix.exceptions.ServiceCompilerException;
+import cookix.tools.ObjectDynamic;
+import cookix.exceptions.InvalidArgumentException;
+import cookix.tools.FolderReader;
+import cookix.core.routing.RouteType;
 
 /**
  * Macro class to load routing files
@@ -23,7 +32,7 @@ class RoutingMacro
     /**
      * @var routes: ObjectDynamic Routes generated
      */
-    private static var routes : ObjectDynamic;
+    private static var routes : Array<RouteType>;
 
     /**
      * Builds routes json during Compilation
@@ -32,16 +41,105 @@ class RoutingMacro
     macro public static function getRoutes()
     {
         if (null == routes) {
+            routes        = new Array<RouteType>();
             configuration = ConfigurationMacro.getConfiguration();
 
             trace('Generating routes container...');
 
-            routes = cast getRoutesConfiguration();
+            getRoutesConfiguration();
 
             trace('Routes container generated');
         }
 
         return Context.makeExpr(routes, Context.currentPos());
+    }
+
+    /**
+     * Generates routes by parsing annotations from controllers
+     */
+    private static function generateRoutes() : Void
+    {
+        var content      : String        = File.getContent('application/config/bundles.json');
+        var dependencies : ObjectDynamic = JsonParser.decode(content);
+
+
+        for (dependency in dependencies.iterator()) {
+            parsePackageController(Std.string(dependency));
+        }
+    }
+
+    /**
+     * Parse the given file system (controllers)
+     * @param  name : String Entry point of the package configuration
+     */
+    private static function parsePackageController(name : String) : Void
+    {
+        #if macro
+            var controllersContent : String        = File.getContent(FolderReader.getFileFromClassPath(name, "/config/routing.json"));
+            var controllersDecoded : Array<String> = cast JsonParser.decode(controllersContent);
+
+            // Parse each controllers
+            for (controller in controllersDecoded.iterator()) {
+                // Add the controller to the included classes
+                Compiler.include(controller);
+
+                try {
+                    var metadata : ClassMetadata = MacroMetadataReader.getMetadata(service);
+
+                    
+                } catch (ex: ServiceCompilerException) {
+                    throw new ServiceCompilerException(controller + ' : ' + ex.message);
+                } catch (ex: NotFoundException) {
+                    throw new NotFoundException(controller + ' : ' + ex.message);
+                } catch (ex: InvalidArgumentException) {
+                    throw new InvalidArgumentException(controller + ' : ' + ex.message);
+                }
+            }
+
+
+        #else
+            throw "You can't parse package service from outside a macro";
+        #end
+    }
+
+    /**
+     * Parse class metadata to build route's array
+     * @param  serviceClass : ClassMetadata Controller to parse
+     */
+    private static function parseMetadata(serviceClass : ClassMetadata) : Void
+    {
+
+    }
+
+    /**
+     * Parse prefix's annotation (if any) to apply the prefix to all controller's routes
+     * @param  serviceClass : Metadata Controller's metadata
+     * @return Route's prefix
+     */
+    private static function parsePrefix(serviceClass : Metadata) : String
+    {
+        var declaration : MetadataType = null;
+
+        try {
+             declaration = serviceClass.get('Prefix'); 
+        } catch (ex: NotFoundException) {
+            // Null if no prefix found
+            return null;
+        }
+
+        // If no value is given
+        if (declaration.params.size() == 0) {
+            return null;
+        }
+
+        var name : ObjectDynamic = declaration.params[0];
+
+        // An array or an object is not a valid name for a service
+        if (name.isArray() || name.isObject()) {
+            throw new InvalidArgumentException("Invalid prefix for your controller, should be string", false);
+        }
+
+        return Std.string(replace(name));
     }
 
     /**

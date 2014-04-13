@@ -32,4 +32,14 @@ class Configuration
     {
         return this.configuration;
     }
+
+    /**
+     * Gets the value of a parameter (each "." represents an object attribute and [] an array)
+     * @param  name : String Full string of the param
+     * @return Parameter's value
+     */
+    public function get(name : String) : ObjectDynamic
+    {
+        return ConfigurationMacro.get(name);
+    }
 }
