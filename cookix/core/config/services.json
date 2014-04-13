@@ -1,0 +1,6 @@
+[
+    "cookix.core.services.config.Configuration",
+    "cookix.core.services.context.Context",
+    "cookix.core.services.controller.Controller",
+    "cookix.core.services.event.EventDispatcher"
+]

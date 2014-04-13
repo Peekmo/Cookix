@@ -1,9 +1,16 @@
-WhaXe
+Cookix
 =====
 
 Open source web framework close to Symfony2, for haXe.
 Project is just started, documentation will come soon :)
 
-You need to have [WhaXe-Commands](https://github.com/Peekmo/WhaXe-Commands) compiled in your project folder to make it works. 
+Roadmap
+=====
+- ~~Adding a metadata reader (in macro)~~
+- ~~Refactoring services's declaration using metadata (macro)~~
+- ~~Refactoring tags declaration using metadata (macro)~~
+- Refactoring routing using metadata (macro)
+- Manage tags priority
+- First documentations
 
-__Easy compilation to PHP and Neko for the same Haxe Code ! :)__
+Next steps are not defined for the moment, feel free to contact me if you want to learn more about this project ;)

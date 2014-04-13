@@ -1,0 +1,23 @@
+package cookix.core.http.parameters;
+
+import cookix.tools.StringMapWX;
+
+/**
+ * Headers parameters bag
+ * @author Axel Anceau (Peekmo)
+ */
+class HeaderParameters extends AbstractParametersBag
+{
+    public function new(params: List<{value: String, header: String}>)
+    {
+        var hashParams : StringMapWX<String> = new StringMapWX<String>();
+
+        if (null != params) {
+            for (param in params.iterator()) {
+                hashParams.set(param.header, param.value);
+            }
+        }
+        
+        super(hashParams);
+    }
+}

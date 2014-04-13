@@ -1,6 +1,0 @@
-[
-    "wx.core.services.config.Configuration",
-    "wx.core.services.context.Context",
-    "wx.core.services.controller.Controller",
-    "wx.core.services.event.EventDispatcher"
-]

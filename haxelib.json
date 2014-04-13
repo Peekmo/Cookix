@@ -1,0 +1,15 @@
+{
+    "name": "cookix",
+    "url": "https://github.com/Peekmo/Cookix",
+    "license": "MIT",
+    "tags": ["neko","php","web"],
+    "description": "Web framework close to Symfony2",
+    "version": "0.1.0",
+    "releasenote": "First releasenote",
+    "contributors": ["
+        Peekmo"
+    ],
+    "dependencies": {
+
+    }
+}
