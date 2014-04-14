@@ -46,7 +46,7 @@ class RoutingMacro
 
             trace('Generating routes container...');
 
-            getRoutesConfiguration();
+            generateRoutes();
 
             trace('Routes container generated');
         }
@@ -84,9 +84,8 @@ class RoutingMacro
                 Compiler.include(controller);
 
                 try {
-                    var metadata : ClassMetadata = MacroMetadataReader.getMetadata(service);
-
-                    
+                    var metadata : ClassMetadata = MacroMetadataReader.getMetadata(controller);
+                    parseMetadata(metadata);
                 } catch (ex: ServiceCompilerException) {
                     throw new ServiceCompilerException(controller + ' : ' + ex.message);
                 } catch (ex: NotFoundException) {
@@ -108,7 +107,7 @@ class RoutingMacro
      */
     private static function parseMetadata(serviceClass : ClassMetadata) : Void
     {
-
+        trace(parsePrefix(serviceClass.global));
     }
 
     /**
@@ -139,16 +138,17 @@ class RoutingMacro
             throw new InvalidArgumentException("Invalid prefix for your controller, should be string", false);
         }
 
-        return Std.string(replace(name));
+        var data : Array<String> = cast ConfigurationMacro.replace(Std.string(name).split('/'));
+        return data.join('/');
     }
 
     /**
      * Get routes configuration
      * @return ObjectDynamic
-     */
-    private static function getRoutesConfiguration() : ObjectDynamic
+     *
+    private static function getRoutesConfiguration() : Void
     {
-        try {
+        /**try {
             var content : String = sys.io.File.getContent('application/config/bundles.json');
 
             var libs : ObjectDynamic = JsonParser.decode(content);
@@ -188,7 +188,7 @@ class RoutingMacro
      * Replaces the routes options with configuration values
      * @param  routes: ObjectDynamic routes's config file
      * @return           Config replaced
-     */
+     *
     private static function replace(routes: ObjectDynamic) : ObjectDynamic
     {
         // Get parameters from routing file parameter
@@ -248,7 +248,7 @@ class RoutingMacro
      * Get parameters from a services's file
      * @param  parameters: ObjectDynamic   Parameters
      * @return             ObjectDynamic
-     */
+     *
     private static function getParameters(parameters: ObjectDynamic) : ObjectDynamic
     {
         for (i in parameters.iterator()) {
@@ -274,5 +274,5 @@ class RoutingMacro
         }
 
         return parameters;
-    }
+    } **/
 }

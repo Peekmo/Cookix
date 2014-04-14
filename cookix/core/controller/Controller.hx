@@ -1,4 +1,4 @@
-package cookix.core.services.controller;
+package cookix.core.controller;
 
 import cookix.core.container.Service;
 
@@ -6,7 +6,6 @@ import cookix.core.container.Service;
  * Controller to extends to get all tools
  * @author Axel Anceau (Peekmo)
  */
-@:Service('cookix.resolver')
 class Controller
 {
     /**

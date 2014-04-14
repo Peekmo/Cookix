@@ -128,14 +128,30 @@ class ConfigurationMacro
             getConfiguration();
         }
 
-        for (i in config.keys().iterator()) {
-            if (config[i].isArray() || config[i].isObject()) {
-                config[i] = replace(config[i]);
-            } else if (Std.string(config[i]).charAt(0) == '%' && Std.string(config[i]).charAt(Std.string(config[i]).length - 1) == '%') {
-                var value : String = Std.string(config[i]).substr(1, Std.string(config[i]).length - 2);
+        if (config.isObject()) {
+            for (i in config.keys().iterator()) {
+                if (config[i].isArray() || config[i].isObject()) {
+                    config = replace(config);
+                } else if (Std.string(config[i]).charAt(0) == '%' && Std.string(config[i]).charAt(Std.string(config[i]).length - 1) == '%') {
+                    var value : String = Std.string(config[i]).substr(1, Std.string(config[i]).length - 2);
 
-                config = get(value);
+                    config[i] = get(value);
+                }
             }
+        } else if (config.isArray()) {
+            for (i in 0...config.size()) {
+                if (config[i].isArray() || config[i].isObject()) {
+                    config = replace(config);
+                } else if (Std.string(config[i]).charAt(0) == '%' && Std.string(config[i]).charAt(Std.string(config[i]).length - 1) == '%') {
+                    var value : String = Std.string(config[i]).substr(1, Std.string(config[i]).length - 2);
+
+                    config[i] = get(value);
+                }
+            }
+        } else if (Std.string(config).charAt(0) == '%' && Std.string(config).charAt(Std.string(config).length - 1) == '%') {
+            var value : String = Std.string(config).substr(1, Std.string(config).length - 2);
+
+            config = get(value);
         }
 
         return config;

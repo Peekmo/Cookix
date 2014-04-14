@@ -1,12 +1,14 @@
-package cookix.core.controller;
+package cookix.core.services.controller;
 
 import cookix.core.routing.Route;
-import cookix.core.events.EventDispatcher;
+import cookix.core.services.event.EventDispatcher;
+import cookix.core.controller.BeforeControllerEvent;
 
 /**
  * Controller resolver service (Managin controllers)
  * @author Axel Anceau (Peekmo)
  */
+@:Service('cookix.resolver')
 class Resolver
 {
     /**
