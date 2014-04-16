@@ -17,6 +17,7 @@ import cookix.tools.ObjectDynamic;
 import cookix.exceptions.InvalidArgumentException;
 import cookix.tools.FolderReader;
 import cookix.core.routing.RouteType;
+using cookix.tools.ArrayTools;
 
 /**
  * Macro class to load routing files
@@ -107,7 +108,9 @@ class RoutingMacro
      */
     private static function parseMetadata(serviceClass : ClassMetadata) : Void
     {
-        trace(parsePrefix(serviceClass.global));
+        var prefix : String = parsePrefix(serviceClass.global);
+
+        var routes : Array<RouteType> = parseRoutes(serviceClass.methods);
     }
 
     /**
@@ -140,6 +143,35 @@ class RoutingMacro
 
         var data : Array<String> = cast ConfigurationMacro.replace(Std.string(name).split('/'));
         return data.join('/');
+    }
+
+    /**
+     * Gets routes informations from controller's methods
+     * @param serviceClass : Metadata Controller's metadata
+     * @param prefix       : String   Controller's routes prefix (if any)
+     */
+    private static function parseRoutes(serviceMethods : Map<String, Metadata>) : Array<RouteType>
+    {
+        var routes : Array<RouteType> = new Array<RouteType>();
+
+        for (methodName in serviceMethods.keys()) {
+            var routesDeclaration : Array<MetadataType> = serviceMethods.get(methodName).getAll('Route');
+
+            for (declaration in routesDeclaration.iterator()) {
+                if (declaration.params.size() == 0) {
+                    throw new NotFoundException("Route name not found", false);
+                }
+
+                var name : String = Std.string(declaration.params[0]);
+
+                // If there's any requirements
+                if (declaration.params.size() == 2) {
+                    var requirements : ObjectDynamic = declaration.params[1];
+                }
+            }
+        }
+
+        return routes;
     }
 
     /**
