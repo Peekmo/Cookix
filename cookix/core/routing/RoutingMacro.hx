@@ -48,6 +48,7 @@ class RoutingMacro
             trace('Generating routes container...');
 
             generateRoutes();
+            trace(routes);
 
             trace('Routes container generated');
         }
@@ -110,7 +111,9 @@ class RoutingMacro
     {
         var prefix : String = parsePrefix(serviceClass.global);
 
-        var routes : Array<RouteType> = parseRoutes(serviceClass.methods);
+        var myRoutes : Array<RouteType> = parseRoutes(serviceClass.methods);
+
+        routes = myRoutes;
     }
 
     /**
@@ -162,12 +165,30 @@ class RoutingMacro
                     throw new NotFoundException("Route name not found", false);
                 }
 
-                var name : String = Std.string(declaration.params[0]);
+                var route : RouteType = {
+                    name : null,
+                    controller : null,
+                    action : methodName,
+                    elements : Std.string(declaration.params[0]).split('/')
+                };
 
                 // If there's any requirements
                 if (declaration.params.size() == 2) {
+                    var req : RouteRequirements = {};
                     var requirements : ObjectDynamic = declaration.params[1];
+
+                    if (requirements.has('methods')) {
+                        req.methods = cast requirements['methods'];
+                    }
+
+                    if (requirements.has('parameters')) {
+                        req.parameters = cast requirements['parameters'];
+                    }
+
+                    route.requirements = req;
                 }
+
+                routes.push(route);
             }
         }
 
