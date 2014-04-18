@@ -1,6 +1,6 @@
 package cookix.core.services.controller;
 
-import cookix.core.routing.Route;
+import cookix.core.routing.RouteType;
 import cookix.core.services.event.EventDispatcher;
 import cookix.core.controller.BeforeControllerEvent;
 
@@ -30,7 +30,7 @@ class Resolver
      * @param  route: Route         Route to the action
      * @return        Response
      */
-    public function resolve(route: Route) : Dynamic
+    public function resolve(route: RouteType) : Dynamic
     {
         // Creates the controller, call the boot method (from superclass) and action
         var inst : Dynamic = Type.createEmptyInstance(Type.resolveClass(route.controller));

@@ -18,6 +18,7 @@ import cookix.exceptions.InvalidArgumentException;
 import cookix.tools.FolderReader;
 import cookix.core.routing.RouteType;
 using cookix.tools.ArrayTools;
+using cookix.core.routing.RoutingTools;
 
 /**
  * Macro class to load routing files
@@ -87,7 +88,7 @@ class RoutingMacro
 
                 try {
                     var metadata : ClassMetadata = MacroMetadataReader.getMetadata(controller);
-                    parseMetadata(metadata);
+                    parseMetadata(metadata, controller);
                 } catch (ex: ServiceCompilerException) {
                     throw new ServiceCompilerException(controller + ' : ' + ex.message);
                 } catch (ex: NotFoundException) {
@@ -106,12 +107,18 @@ class RoutingMacro
     /**
      * Parse class metadata to build route's array
      * @param  serviceClass : ClassMetadata Controller to parse
+     * @param  controller   : String        Controller's name
      */
-    private static function parseMetadata(serviceClass : ClassMetadata) : Void
+    private static function parseMetadata(serviceClass : ClassMetadata, controller : String) : Void
     {
         var prefix : String = parsePrefix(serviceClass.global);
 
         var myRoutes : Array<RouteType> = parseRoutes(serviceClass.methods);
+
+        for (route in myRoutes.iterator()) {
+            route.name       = prefix.getElements().merge(route.elements, true).join('_');
+            route.controller = controller;
+        }
 
         routes = myRoutes;
     }
@@ -169,7 +176,7 @@ class RoutingMacro
                     name : null,
                     controller : null,
                     action : methodName,
-                    elements : Std.string(declaration.params[0]).split('/')
+                    elements : Std.string(declaration.params[0]).getElements()
                 };
 
                 // If there's any requirements
