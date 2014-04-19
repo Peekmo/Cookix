@@ -1,10 +1,9 @@
 package cookix.core;
 
-import cookix.core.routing.Route;
+import cookix.core.routing.RouteType;
 import cookix.core.container.Service;
 import cookix.core.http.request.RequestEvent;
 import cookix.core.http.response.ResponseEvent;
-import Imports;
 
 /**
  * Application's kernel, called on every request just after booting
@@ -25,7 +24,7 @@ class Kernel
 
         // Sets the request to the context
         container.get('cookix.context').request = request;
-        var route : Route = cast container.get('cookix.routing').match(Std.string(request.uri));
+        var route : RouteType = cast container.get('cookix.routing').match(Std.string(request.uri));
 
         var response = container.get('cookix.resolver').resolve(route);
 

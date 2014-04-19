@@ -36,6 +36,21 @@ class AbstractParametersBag
     }
 
     /**
+     * Return all values from the bag
+     * @return array
+     */
+    public function values() : Array<String>
+    {
+        var values : Array<String> = new Array<String>();
+
+        for (value in this.params.iterator()) {
+            values.push(value);
+        }
+
+        return values;
+    }
+
+    /**
      * Get a value
      * @param  key:     String        Parameter's key
      * @param  ?ifNull: String        Value to return if the parameter is null

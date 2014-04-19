@@ -1,3 +1,9 @@
 {
-    
+    "cookix" : {
+    	"routing": {
+    		"annotations": {
+    			"methods" : ["POST", "GET", "PUT", "DELETE"]
+    		}
+    	}
+    }
 }

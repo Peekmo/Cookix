@@ -3,8 +3,10 @@ package cookix.core.services.routing;
 import cookix.exceptions.NotFoundException;
 import cookix.core.services.context.Context;
 import cookix.core.http.parameters.RoutingParameters;
-import cookix.core.routing.Route;
+import cookix.core.routing.RouteType;
 import cookix.core.routing.RoutingMacro;
+import cookix.tools.ObjectDynamic;
+using cookix.core.routing.RoutingTools;
 
 /**
  * General routing used by the router (Service)
@@ -17,7 +19,7 @@ class Routing
     /**
      * @var routes: Array<Route> All routes available
      */
-    private var routes(null, null): Array<Route>;
+    private var routes(null, null): Array<RouteType>;
 
     /**
      * @var context: Context Context's service
@@ -40,14 +42,14 @@ class Routing
      * @throws NotFoundException If no route is matching the given route
      * @return       Route found
      */
-    public function match(path: String) : Route
+    public function match(path: String) : RouteType
     {
         if (this.routes.length > 0) {
             for (route in this.routes.iterator()) {
-                var oRoute : Route = cast route;
+                var oRoute : RouteType = cast route;
 
-                var arrPath : Array<String> = path.split('/');
-                var arrRoute : Array<String> = oRoute.route.split('/');
+                var arrPath : Array<String> = path.getElements();
+                var arrRoute : Array<String> = oRoute.elements;
                 var routingParameters : RoutingParameters = new RoutingParameters();
 
                 if (arrPath.length == arrRoute.length) {
@@ -58,17 +60,20 @@ class Routing
                         // Dynamic routing parameter
                         if (arrRoute[i].charAt(0) == ':') {
                             var rParam : String = arrRoute[i].substring(1, arrRoute[i].length);
-                            if (oRoute.requirements.has(rParam)) {
-                                var reg : EReg = new EReg(Std.string(oRoute.requirements[rParam]), '');
+                            if (oRoute.requirements.parameters != null) {
+                                var parameters : ObjectDynamic = cast oRoute.requirements.parameters;
 
-                                if (!reg.match(arrPath[i])) {
-                                    match = false;
-                                    break;
+                                if (parameters.has(rParam)) {
+                                    var reg : EReg = new EReg(Std.string(parameters[rParam]), '');
+
+                                    if (!reg.match(arrPath[i])) {
+                                        match = false;
+                                        break;
+                                    }
                                 }
-
-                                routingParameters.set(rParam, arrPath[i]);
                             }
 
+                            routingParameters.set(rParam, arrPath[i]);
                         } else if (arrRoute[i] != arrPath[i] ){
                             match = false;
                             break;
@@ -88,15 +93,15 @@ class Routing
 
     /**
      * Checks if the given route's requirements are followed
-     * @param  oRoute: Route         Route to check
+     * @param  oRoute: RouteType Route to check
      * @return         Bool
      */
-    public function checkRequirements(oRoute: Route) : Bool
+    public function checkRequirements(oRoute: RouteType) : Bool
     {
         // Check for method
-        if (oRoute.requirements.has('_methods')) {
+        if (oRoute.requirements.methods != null) {
             var found : Bool = false;
-            var methods : Array<String> = cast oRoute.requirements['_methods'];
+            var methods : Array<String> = cast oRoute.requirements.methods;
             for (method in methods.iterator()) {
                 if (this.context.request.isMethod(Std.string(method))) {
                     found = true;

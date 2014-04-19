@@ -5,6 +5,7 @@ package cookix.core.services.context;
  * @author Axel Anceau (Peekmo)
  */
 @:Service('cookix.context')
+@:Parameters('%general.env%')
 class Context 
 {
     /**

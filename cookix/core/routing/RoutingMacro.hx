@@ -49,7 +49,6 @@ class RoutingMacro
             trace('Generating routes container...');
 
             generateRoutes();
-            trace(routes);
 
             trace('Routes container generated');
         }
@@ -64,7 +63,6 @@ class RoutingMacro
     {
         var content      : String        = File.getContent('application/config/bundles.json');
         var dependencies : ObjectDynamic = JsonParser.decode(content);
-
 
         for (dependency in dependencies.iterator()) {
             parsePackageController(Std.string(dependency));
@@ -106,21 +104,28 @@ class RoutingMacro
 
     /**
      * Parse class metadata to build route's array
-     * @param  serviceClass : ClassMetadata Controller to parse
-     * @param  controller   : String        Controller's name
+     * @param  controllerClass : ClassMetadata Controller to parse
+     * @param  controller      : String        Controller's name
      */
-    private static function parseMetadata(serviceClass : ClassMetadata, controller : String) : Void
+    private static function parseMetadata(controllerClass : ClassMetadata, controller : String) : Void
     {
-        var prefix : String = parsePrefix(serviceClass.global);
+        var prefix : String = parsePrefix(controllerClass.global);
 
-        var myRoutes : Array<RouteType> = parseRoutes(serviceClass.methods);
+        var myRoutes : Array<RouteType> = parseRoutes(controllerClass.methods);
 
         for (route in myRoutes.iterator()) {
-            route.name       = prefix.getElements().merge(route.elements, true).join('_');
+            if (prefix != null) {
+                route.elements = prefix.getElements().merge(route.elements, true);
+            }
+
+            if (route.name == null) {
+                route.name = route.elements.join('_');
+            }
+
             route.controller = controller;
         }
 
-        routes = myRoutes;
+        routes.merge(myRoutes);
     }
 
     /**
@@ -165,37 +170,17 @@ class RoutingMacro
         var routes : Array<RouteType> = new Array<RouteType>();
 
         for (methodName in serviceMethods.keys()) {
+            // @:Route
             var routesDeclaration : Array<MetadataType> = serviceMethods.get(methodName).getAll('Route');
+            routes.merge(parseRoute(methodName, routesDeclaration));
 
-            for (declaration in routesDeclaration.iterator()) {
-                if (declaration.params.size() == 0) {
-                    throw new NotFoundException("Route name not found", false);
-                }
+            // Get HTTP methods allowed for routing from cookix's configuration
+            var methods : Array<String> = cast configuration["cookix"]["routing"]["annotations"]["methods"];
 
-                var route : RouteType = {
-                    name : null,
-                    controller : null,
-                    action : methodName,
-                    elements : Std.string(declaration.params[0]).getElements()
-                };
-
-                // If there's any requirements
-                if (declaration.params.size() == 2) {
-                    var req : RouteRequirements = {};
-                    var requirements : ObjectDynamic = declaration.params[1];
-
-                    if (requirements.has('methods')) {
-                        req.methods = cast requirements['methods'];
-                    }
-
-                    if (requirements.has('parameters')) {
-                        req.parameters = cast requirements['parameters'];
-                    }
-
-                    route.requirements = req;
-                }
-
-                routes.push(route);
+            // Get annotations values from each of them
+            for (method in methods.iterator()) {
+                routesDeclaration = serviceMethods.get(methodName).getAll(method);
+                routes.merge(parseRoute(methodName, routesDeclaration, method));
             }
         }
 
@@ -203,136 +188,56 @@ class RoutingMacro
     }
 
     /**
-     * Get routes configuration
-     * @return ObjectDynamic
-     *
-    private static function getRoutesConfiguration() : Void
+     * Parse one method routing annotation (get, post, put, delete or route)
+     * @param  methodName        : String              Method name
+     * @param  routesDeclaration : Array<MetadataType> Metadata from the given method and given annotation
+     * @param  method            : String              HTTP method allowed (for get, post, put, delete). Cannot be overrided
+     * @return Array of all routes gets
+     */
+    private static function parseRoute(methodName : String, routesDeclaration : Array<MetadataType>, ?method : String) : Array<RouteType>
     {
-        /**try {
-            var content : String = sys.io.File.getContent('application/config/bundles.json');
+        var routes : Array<RouteType> = new Array<RouteType>();
 
-            var libs : ObjectDynamic = JsonParser.decode(content);
-            var final : ObjectDynamic = [];
-
-            // Get config.json from each internal bundles
-            for (i in libs['internals'].iterator()) {
-                var folder : String = Std.string(libs['internals'][i]).split('.').join('/');
-                var config : String = sys.io.File.getContent('src/' + folder + '/config/config.json');
-
-                var decoded : ObjectDynamic = JsonParser.decode(config);
-                for (z in decoded['routing'].iterator()) {
-                    var routing : String = sys.io.File.getContent('src/' + folder + '/config/' + decoded['routing'][z]);
-                    final.merge(replace(JsonParser.decode(routing)));
-                }
+        for (declaration in routesDeclaration.iterator()) {
+            if (declaration.params.size() == 0) {
+                throw new NotFoundException("Route name not found", false);
             }
 
-            // Get config.json from each external bundles
-            for (i in libs['externals'].iterator()) {
-                var folder : String = Std.string(libs['externals'][i]).split('.').join('/');
-                var config : String = sys.io.File.getContent('lib/' + folder + '/config/config.json');
-
-                var decoded : ObjectDynamic = JsonParser.decode(config);
-                for (z in decoded['routing'].iterator()) {
-                    var routing : String = sys.io.File.getContent('lib/' + folder + '/config/' + decoded['routing'][z]);
-                    final.merge(replace(JsonParser.decode(routing)));
-                }
-            }
-
-            return final;
-        } catch (ex: String) {
-            throw new FileNotFoundException('No bundles configuration found (' + ex.split(':')[0] +')');
-        }
-    }
-
-    /**
-     * Replaces the routes options with configuration values
-     * @param  routes: ObjectDynamic routes's config file
-     * @return           Config replaced
-     *
-    private static function replace(routes: ObjectDynamic) : ObjectDynamic
-    {
-        // Get parameters from routing file parameter
-        var parameters: ObjectDynamic = cast getParameters(routes['parameters']);
-
-        // Loop on routes to adding them into global routes's container (if there's routes)
-        if (!routes.isObject() || !routes['routes'].isObject()) {
-            return null;
-        }
-
-        var arrRoutes : Array<ObjectDynamic> = new Array<ObjectDynamic>();
-        for (route in routes['routes'].iterator()) {
-            if (!routes['routes'][route].has('controller') || !routes['routes'][route].has('action')) {
-                throw new NotFoundException('Route ' + route + ' does not have controller or action specified');
-            }
-
-            // Replace routing parameters
-            var routingParameters : Array<String> = Std.string(route).split('/');
-            var iterator: IntIterator = new IntIterator(0, routingParameters.length);
-            for (i in iterator) {
-                if (0 == i) {
-                    if ('' != routingParameters[i]) {
-                        throw new InvalidArgumentException('[' + route + '] Route must start with "/"');
-                    }
-
-                    continue;
-                }
-
-                if (routingParameters[i].charAt(0) == '%' && routingParameters[i].charAt(routingParameters[i].length - 1) == '%') {
-                    var value : String = Std.string(routingParameters[i]).substr(1, Std.string(routingParameters[i]).length - 2);
-
-                    if (parameters.has(value)) {
-                        routingParameters[i] = Std.string(parameters[value]);
-                    } else {
-                        throw new NotFoundException('Parameter '+ value +' does not exists');
-                    }
-                }
-            }
-
-            var oRoute = {
-                route : routingParameters.join('/'), 
-                controller: Std.string(routes['routes'][route]['controller']), 
-                action: Std.string(routes['routes'][route]['action']),
-                requirements: routes['routes'][route]['requirements']
+            var route : RouteType = {
+                name : null,
+                controller : null,
+                action : methodName,
+                elements : Std.string(declaration.params[0]).getElements(),
+                requirements: {}
             };
 
-            arrRoutes.push(cast oRoute);
-        }
+            // Methods allowed
+            if (method != null) {
+                route.requirements.methods = [method];
+            } 
 
-        var finalRoutes : ObjectDynamic = cast []; 
-        finalRoutes = arrRoutes;
+            // If there's any requirements
+            if (declaration.params.size() == 2) {
+                var requirements : ObjectDynamic = declaration.params[1];
 
-        return finalRoutes;
-    }
-
-    /**
-     * Get parameters from a services's file
-     * @param  parameters: ObjectDynamic   Parameters
-     * @return             ObjectDynamic
-     *
-    private static function getParameters(parameters: ObjectDynamic) : ObjectDynamic
-    {
-        for (i in parameters.iterator()) {
-            if (parameters[i].isArray() || parameters[i].isObject()) {
-                throw new InvalidArgumentException('Routing parameters can\'t be an array or an object');
-
-            } else if (Std.string(parameters[i]).charAt(0) == '%') {
-                var value : String = Std.string(parameters[i]).substr(1, Std.string(parameters[i]).length - 2);
-
-                var elements : Array<String> = value.split('.');
-
-                var current : ObjectDynamic = configuration;
-                for (key in elements.iterator()) {
-                    if (current.has(key)) {
-                        current = current[key];
-                    } else {
-                        throw new NotFoundException('The key '+ key +' has not been found in configuration\'s file');
-                    }
+                if (method == null && requirements.has('methods')) {
+                    route.requirements.methods = cast requirements['methods'];
                 }
 
-                parameters[i] = current;
+                // Route parameters requirements
+                if (requirements.has('parameters')) {
+                    route.requirements.parameters = cast requirements['parameters'];
+                }
+
+                // Route name
+                if (requirements.has('name')) {
+                    route.name = Std.string(requirements['name']);
+                }
             }
+
+            routes.push(route);
         }
 
-        return parameters;
-    } **/
+        return routes;
+    }
 }

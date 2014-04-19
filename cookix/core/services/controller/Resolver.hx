@@ -3,12 +3,14 @@ package cookix.core.services.controller;
 import cookix.core.routing.RouteType;
 import cookix.core.services.event.EventDispatcher;
 import cookix.core.controller.BeforeControllerEvent;
+import cookix.core.services.context.Context;
 
 /**
  * Controller resolver service (Managin controllers)
  * @author Axel Anceau (Peekmo)
  */
 @:Service('cookix.resolver')
+@:Parameters('@cookix.dispatcher', '@cookix.context')
 class Resolver
 {
     /**
@@ -17,11 +19,18 @@ class Resolver
     public var dispatcher: EventDispatcher;
 
     /**
+     * @var context : Context Request's context service
+     */
+    public var context : Context;
+
+    /**
      * Contructor
+     * @param context   : Context Request's context service
      * @param dispatcher: Dispatcher Event dispatcher
      */
-    public function new(dispatcher: EventDispatcher)
+    public function new(dispatcher: EventDispatcher, context: Context)
     {
+        this.context    = context;
         this.dispatcher = dispatcher;
     }
 
@@ -39,7 +48,7 @@ class Resolver
         this.dispatcher.dispatch('cookix.beforeController', new BeforeControllerEvent(inst));
 
         Reflect.callMethod(inst, Reflect.field(inst, 'boot'), []);
-        var response = Reflect.callMethod(inst, Reflect.field(inst, route.action + 'Action'), []);
+        var response = Reflect.callMethod(inst, Reflect.field(inst, route.action), this.context.request.routing.values());
 
         return response;
     }
