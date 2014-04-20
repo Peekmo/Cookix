@@ -9,8 +9,9 @@ Roadmap
 - ~~Adding a metadata reader (in macro)~~
 - ~~Refactoring services's declaration using metadata (macro)~~
 - ~~Refactoring tags declaration using metadata (macro)~~
-- Refactoring routing using metadata (macro)
+- ~~Refactoring routing using metadata (macro)~~
 - Manage tags priority
+- Removing StringMapWX
 - First documentations
 - Commands tool (with dump conf/services/routes commands)
 
