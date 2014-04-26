@@ -7,6 +7,7 @@ import cookix.core.container.TagType;
  * Service container toolkit
  * @author Axel Anceau (Peekmo)
  */
+@:Service('cookix.container')
 class Service
 {
     /**
@@ -35,6 +36,6 @@ class Service
      */
     public function getTags(name: String, ?type : String) : Array<TagType>
     {
-        return ServiceContainer.getTags(type);
+        return ServiceContainer.getTags(name, type);
     }
 }

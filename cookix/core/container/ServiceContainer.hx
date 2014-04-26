@@ -83,7 +83,7 @@ class ServiceContainer
     {
         var currentTags : Array<TagType> = cast tags[name];
 
-        if (null != type) {
+        if (null != type && null != currentTags) {
             var finalTags : Array<TagType> = Reflect.copy(currentTags);
 
             for (tag in finalTags.iterator()) {

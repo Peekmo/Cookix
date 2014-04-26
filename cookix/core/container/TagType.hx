@@ -9,4 +9,5 @@ typedef TagType = {
     var type      : String; // Tag type (e.g : event)
     var method    : String; // Method to call
     var service   : String; // Service identifier of the tag
+    var priority  : Int;    // Event's priority (default 0)
 }

@@ -10,13 +10,17 @@ import cookix.core.container.TagType;
  * @author Axel Anceau (Peekmo)
  */
 @:Service('cookix.dispatcher')
+@:Parameters('@cookix.container')
 class EventDispatcher 
 {
+    private var container : Service;
+
     /**
      * Constructor - Inject service container to get subscribed services
      */
-    public function new() : Void
+    public function new(container : Service) : Void
     {
+        this.container = container;
     }
 
     /**
@@ -26,7 +30,7 @@ class EventDispatcher
      */
     public function dispatch(tag: String, event: Dynamic) : Void
     {
- /**       var listeners : Array<TagType> = this.container.getTags(tag, 'event');
+        var listeners : Array<TagType> = this.container.getTags(tag, 'event');
 
         for (listener in listeners.iterator()) {
             var args: Array<Dynamic> = new Array<Dynamic>();
@@ -37,6 +41,6 @@ class EventDispatcher
             // Call the method
             Reflect.callMethod(service,
                 Reflect.field(service, Std.string(listener.method)), args);
-        } **/
+        } 
     }
 }

@@ -115,6 +115,25 @@ class ConfigurationMacro
         return Context.makeExpr(configuration, Context.currentPos());
     }
 
+    /**
+     * Gets the full plane configuration
+     * @return Plane configuration
+     */
+    macro public static function getPlaneConfiguration()
+    {
+        if (null == configuration) {
+            getConfiguration();
+        }
+
+        // Build the object from Map (can't return the map directly :( )
+        var obj : ObjectDynamic = cast {};
+        for (key in planeConfiguration.keys()) {
+            obj[key] = cast planeConfiguration.get(key);
+        }
+
+        return Context.makeExpr(obj, Context.currentPos());
+    }
+
 
     /**
      * EXTERNAL

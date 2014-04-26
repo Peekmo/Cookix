@@ -2,6 +2,7 @@ package cookix.core.services.config;
 
 import cookix.tools.ObjectDynamic;
 import cookix.core.config.ConfigurationMacro;
+import cookix.exceptions.NotFoundException;
 
 /**
  * Configuration checker
@@ -16,12 +17,18 @@ class Configuration
     public var configuration(null, null) : ObjectDynamic;
 
     /**
+     * @var planeConfiguration : Map<String, ObjectDynamic> Plane representation of application's config
+     */
+    public var planeConfiguration : ObjectDynamic;
+
+    /**
      * Constructor
      * Gets configuration from macro
      */
     public function new()
     {
-        this.configuration = ConfigurationMacro.getConfiguration();
+        this.configuration      = ConfigurationMacro.getConfiguration();
+        this.planeConfiguration = ConfigurationMacro.getPlaneConfiguration();
     }
 
     /**
@@ -40,6 +47,10 @@ class Configuration
      */
     public function get(name : String) : ObjectDynamic
     {
-        return ConfigurationMacro.get(name);
+        if (this.planeConfiguration.has(name)) {
+            return this.planeConfiguration[name];
+        } else {
+            throw new NotFoundException('Parameter '+ name +' does not exists');
+        }
     }
 }

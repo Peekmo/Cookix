@@ -16,6 +16,7 @@ import cookix.exceptions.ServiceCompilerException;
 import cookix.tools.ObjectDynamic;
 import cookix.exceptions.InvalidArgumentException;
 import cookix.tools.FolderReader;
+import cookix.core.container.TagType;
 
 /**
  * Parse services's files and create the service container
@@ -60,6 +61,7 @@ class ServiceMacro
 
         return Context.makeExpr(obj, Context.currentPos());
     }
+
     /**
      * Builds configuration json during Compilation
      * @return Configuration
@@ -90,6 +92,19 @@ class ServiceMacro
 
         for (dependency in dependencies.iterator()) {
             parsePackageService(Std.string(dependency));
+        }
+
+        // Ordering tags by priority
+        for (tag in tags.iterator()) {
+            tag.sort(function(tag1 : TagType, tag2 : TagType) {
+                if (tag1.priority < tag2.priority) {
+                    return 1;
+                } else if (tag1.priority > tag2.priority) {
+                    return -1;
+                }
+
+                return 0;
+            });
         }
     }
 
@@ -244,6 +259,9 @@ class ServiceMacro
                 tag.service = "";
 
                 tag.name = Std.string(ConfigurationMacro.replace(cast tag.name));
+
+                // Tag priority is set to 0 by default
+                tag.priority = tag.priority != null ? tag.priority : 0;
 
                 serviceTags.push(tag);
             }
