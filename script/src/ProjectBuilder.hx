@@ -41,7 +41,7 @@ class ProjectBuilder
 			} 
 		}
 
-		FolderReader.createFile(this.name + "/application/boot.hx", 
+		FolderReader.createFile(Sys.getCwd() + "/" + this.name + "/application/boot.hx", 
 "
 import cookix.core.http.request.Request;
 import cookix.core.Kernel;
