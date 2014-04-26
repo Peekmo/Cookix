@@ -42,12 +42,16 @@ class ServiceMacro
      */
     macro public static function getServices()
     {
-        if (null == services) {
-            services      = new Map<String, ServiceType>();
-            tags          = new Map<String, Array<TagType>>();
+        // To avoid too many writing in the disk
+        var exists : Bool = true;
 
+        if (null == services) {
+            exists    = false;
+            services  = new Map<String, ServiceType>();
+            tags      = new Map<String, Array<TagType>>();
             trace('Generating service container...');
 
+            // Generates tags and services
             generateServices();
 
             trace('Service container generated');
@@ -57,6 +61,11 @@ class ServiceMacro
         var obj : ObjectDynamic = cast {};
         for (key in services.keys()) {
             obj[key] = cast services.get(key);
+        }
+
+        if (!exists) {
+            // Register services in a file
+            FolderReader.createFile("application/exports/config/dump_services.json", JsonParser.encode(obj));
         }
 
         return Context.makeExpr(obj, Context.currentPos());
@@ -77,6 +86,9 @@ class ServiceMacro
         for (key in tags.keys()) {
             obj[key] = cast tags.get(key);
         }
+
+        // Register tags in a file
+        FolderReader.createFile("application/exports/config/dump_tags.json", JsonParser.encode(obj));
 
         return Context.makeExpr(obj, Context.currentPos());
     }

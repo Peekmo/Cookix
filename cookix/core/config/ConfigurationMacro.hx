@@ -108,6 +108,10 @@ class ConfigurationMacro
             // Finally build application's configuration
             configReplace(confObject, paramObject);
 
+
+            // Register configurations in a file
+            FolderReader.createFile("application/exports/config/dump_configurations.json", JsonParser.encode(configuration));
+
             planeConfiguration = configuration.getPlaneRepresentation();
             trace('Configuration generated');
         }

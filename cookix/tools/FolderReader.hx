@@ -1,6 +1,7 @@
 package cookix.tools;
 
 import sys.FileSystem;
+import sys.io.File;
 
 /**
  * Utility to deal with folders
@@ -55,5 +56,45 @@ class FolderReader
         #end
 
         return null;
+    }
+
+    /**
+     * Creates a file to the given path, with the given content
+     * (Creates all directories if they not exists)
+     * @param  path     : String Path to the file (each folders separated by '/')
+     * @param  ?content : String File's content
+     */
+    public static function createFile(path : String, ?content : String) : Void
+    {
+        var parts : Array<String> = path.split('/');
+        var fileName : String = parts.pop();
+
+        // Create all directories necessaries
+        createDirectory(parts.join('/'));
+
+        if (content == null) {
+            content = "";
+        }
+
+        File.saveContent(path, content);
+    }
+
+    /**
+     * Creates the given directory (and all path's directories if needed)
+     * @param  path : String Path to the given directory
+     */
+    public static function createDirectory(path : String) : Void
+    {
+        var parts : Array<String> = path.split('/');
+        
+        var done : String = null;
+
+        for (part in parts.iterator()) {
+            done = done == null ? part : done + "/" + part;
+
+            if (!FileSystem.exists(done)) {
+                FileSystem.createDirectory(done);
+            }
+        }
     }
 }
