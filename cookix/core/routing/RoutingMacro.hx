@@ -50,6 +50,9 @@ class RoutingMacro
 
             generateRoutes();
 
+            // Register routes in a file
+            FolderReader.createFile("application/exports/config/dump_routes.json", JsonParser.encode(routes));
+
             trace('Routes container generated');
         }
 
