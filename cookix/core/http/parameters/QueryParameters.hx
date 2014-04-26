@@ -1,6 +1,6 @@
 package cookix.core.http.parameters;
 
-import cookix.tools.StringMapWX;
+import haxe.ds.StringMap;
 
 /**
  * Query parameter bag
@@ -15,7 +15,7 @@ class QueryParameters extends AbstractParametersBag
     public function new(params: String)
     {
         var arrayParams : Array<String> = params.split('&');
-        var hashParams : StringMapWX<String> = new StringMapWX<String>();
+        var hashParams : StringMap<String> = new StringMap<String>();
 
         if (null != params) {
             for (param in arrayParams.iterator()) {

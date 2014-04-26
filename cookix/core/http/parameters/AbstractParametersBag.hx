@@ -1,6 +1,6 @@
 package cookix.core.http.parameters;
 
-import cookix.tools.StringMapWX;
+import haxe.ds.StringMap;
 
 /**
  * Parameter bag
@@ -9,28 +9,28 @@ import cookix.tools.StringMapWX;
 class AbstractParametersBag
 {
     /**
-     * @var params: StringMapWX<String> Parameters set
+     * @var params: StringMap<String> Parameters set
      */
-    public var params(null, null) : StringMapWX<String>;
+    public var params(null, null) : StringMap<String>;
 
     /**
      * Constructor
-     * @param  ?params: StringMapWX<String> Parameters
+     * @param  ?params: StringMap<String> Parameters
      */
-    private function new(?params: StringMapWX<String>)
+    private function new(?params: StringMap<String>)
     {
         this.params = params;
 
         if (null == this.params) {
-            this.params = new StringMapWX<String>();       
+            this.params = new StringMap<String>();       
         }
     }
 
     /**
      * Returns all parameters
-     * @return StringMapWX<String>
+     * @return StringMap<String>
      */
-    public function all() : StringMapWX<String>
+    public function all() : StringMap<String>
     {
         return this.params;
     }
@@ -52,14 +52,14 @@ class AbstractParametersBag
 
     /**
      * Get a value
-     * @param  key:     String        Parameter's key
-     * @param  ?ifNull: String        Value to return if the parameter is null
-     * @return          String
+     * @param  key:   String        Parameter's key
+     * @param  ?base: String        Value to return if the parameter is null
+     * @return        String
      */
-    public function get(key: String, ?ifNull: String) : String
+    public function get(key: String, ?base: String) : String
     {
         if (null == this.params.get(key)) {
-            return ifNull;
+            return base;
         }
 
         return this.params.get(key);

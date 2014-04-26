@@ -1,6 +1,6 @@
 package cookix.core.http.parameters;
 
-import cookix.tools.StringMapWX;
+import haxe.ds.StringMap;
 
 /**
  * Post parameter bag
@@ -14,7 +14,7 @@ class PostParameters extends AbstractParametersBag
      */
     public function new(params: String)
     {
-        var hashParams : StringMapWX<String> = new StringMapWX<String>();
+        var hashParams : StringMap<String> = new StringMap<String>();
 
         if (null != params) {
             var arrayParams : Array<String> = params.split('&');

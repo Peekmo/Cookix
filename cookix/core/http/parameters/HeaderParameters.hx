@@ -1,6 +1,6 @@
 package cookix.core.http.parameters;
 
-import cookix.tools.StringMapWX;
+import haxe.ds.StringMap;
 
 /**
  * Headers parameters bag
@@ -10,7 +10,7 @@ class HeaderParameters extends AbstractParametersBag
 {
     public function new(params: List<{value: String, header: String}>)
     {
-        var hashParams : StringMapWX<String> = new StringMapWX<String>();
+        var hashParams : StringMap<String> = new StringMap<String>();
 
         if (null != params) {
             for (param in params.iterator()) {

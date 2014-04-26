@@ -1,6 +1,6 @@
 package cookix.core.http.parameters;
 
-import cookix.tools.StringMapWX;
+import haxe.ds.StringMap;
 
 /**
  * Routing parameter bag
@@ -14,6 +14,6 @@ class RoutingParameters extends AbstractParametersBag
      */
     public function new()
     {
-        super(new StringMapWX<String>());
+        super(new StringMap<String>());
     }
 }

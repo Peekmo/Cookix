@@ -224,7 +224,7 @@ abstract ObjectDynamic(Dynamic) from Dynamic
     /**
      * Merge the current map with the given one (set force to true if you want to erase an existing value)
      * @throws cookix.exceptions.ExistsException On same key
-     * @param  map: StringMapWX<T> StringMapWX to merge
+     * @param  map: ObjectDynamic to merge
      */
     public function merge(map: ObjectDynamic, ?force: Bool = false) : Void
     {

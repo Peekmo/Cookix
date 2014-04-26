@@ -1,8 +1,8 @@
 package cookix.core.container;
 
-import cookix.tools.StringMapWX;
 import cookix.tools.ObjectDynamic;
 import cookix.core.container.TagType;
+import haxe.ds.StringMap;
 
 /**
  * Service container
@@ -18,7 +18,7 @@ class ServiceContainer
     /**
      * Container of all services instanciated
      */
-    private static var instanciations(null, null) : StringMapWX<Dynamic> = new StringMapWX<Dynamic>();
+    private static var instanciations(null, null) : StringMap<Dynamic> = new StringMap<Dynamic>();
 
     /**
      * Services tags
