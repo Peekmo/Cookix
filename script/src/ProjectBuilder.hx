@@ -9,6 +9,11 @@ import cookix.tools.FolderReader;
 class ProjectBuilder
 {
 	/**
+	 * @var userDir : String Current user's directory
+	 */
+	public var userDir : String;
+
+	/**
 	 * @var name : String Project's name
 	 */
 	public var name : String;
@@ -20,13 +25,13 @@ class ProjectBuilder
 
 	/**
 	 * Project's constructor
-	 * @param  ?name : String Project's name (optional, will be asked if missing)
+	 * @param  userDir : String Current user's directory
+	 * @param  name    : String Project's name
 	 */
-	public function new (?name : String) : Void
+	public function new (userDir : String, name : String) : Void
 	{
-		if (null != name) {
-			this.name = name;
-		}
+		this.name    = name;
+		this.userDir = userDir;
 	}
 
 	/**
@@ -34,34 +39,6 @@ class ProjectBuilder
 	 */
 	public function build() : Void
 	{
-		if (null == this.name) {
-			while (this.name == null || this.name == "") {
-				Sys.print("Please, enter a name for your project : ");
-				this.name = Sys.stdin().readLine();
-			} 
-		}
-
-		FolderReader.createFile(Sys.getCwd() + "/" + this.name + "/application/boot.hx", 
-"
-import cookix.core.http.request.Request;
-import cookix.core.Kernel;
-
-/**
- * Main of the application
- * @author Axel Anceau (Peekmo)
- */
-class Boot
-{
-    /**
-     * Application's entry point
-     */
-    public static function main()
-    {
-        var request = Request.create();
-        Kernel.handle(request);
-    }
-}
-"
-		 );
+		FolderReader.copyFileSystem(Sys.getCwd() + "script/templates/base", this.userDir + this.name);
 	}
 }

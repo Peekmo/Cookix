@@ -11,34 +11,43 @@ class RunScript
 	 */
 	public static function main() : Void
 	{
-		var args : Array<String> = Sys.args();
+		try {
+			createCommands();
+			Console.initialization();
 
-		if (args.length == 0) {
-			Sys.println("Cookix : Missing argument /!\\ Use --help to get available commands");
-			return;
-		}
-
-		var command : String = args[0];
-
-		if (args[0] == "--help") {
-			printHelp();
-		} else if (args[0] == "--new") {
-			var name : String = null;
-			if (args.length > 1) {
-				name = args[1];
-			}
-
-			var project : ProjectBuilder = new ProjectBuilder(name);
-			project.build();
+			CommandReader.check();
+		} catch (ex : CliException) {
+			Sys.println("ERROR => " + ex.message);
+			Sys.println("");
+			Console.showHelp();
 		}
 	}
 
 	/**
-	 * Prints available commands to the user
+	 * Fill the CommandReader with all commands allowed
 	 */
-	public static function printHelp() : Void
+	public static function createCommands() : Void
 	{
-		Sys.println("Cookix - Available commands");
-		Sys.println("--new <project name> to create a new project");
+		CommandReader.push({
+			name: "help", 
+			description: "Prints command's lists", 
+			hasValue: false,
+			callback: function(?value : String) {
+				Console.showHelp();
+			}
+		});
+
+		CommandReader.push({
+			name: "project", 
+			description: "Creates a new cookix project", 
+			hasValue: true,
+			valueMandatory: true,
+			valueDescription: "project-name",
+			callback: function(?value: String) {
+				var project : ProjectBuilder = new ProjectBuilder(Console.userDir, value);
+				project.build();
+				Sys.println("The project has been successfully created.");
+			}
+		});
 	}
 }

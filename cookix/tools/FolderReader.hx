@@ -154,4 +154,37 @@ class FolderReader
             }
         }
     }
+
+    /**
+     * Copy all files from source to destination
+     * @param  source      : String Source's path
+     * @param  destination : String Destination's path
+     */
+    public static function copyFileSystem(source : String, destination : String) : Void
+    {
+        try {
+            if (source.endsWith("/")) {
+                source = source.substr(0, -1);
+            }
+
+            // If that's a file
+            if (!FileSystem.isDirectory(source)) {
+                createFile(destination, File.getContent(source));
+            } else {
+                var files : Array<String> = FileSystem.readDirectory(source);
+
+                for (file in files.iterator()) {
+                    if (FileSystem.isDirectory(source + "/" + file)) {
+                        createDirectory(destination);
+                    }
+
+                    // Recursive call
+                    copyFileSystem(source + "/" + file, destination + "/" + file);
+                }                
+            }
+
+        } catch (ex: String) {
+            throw "Unable to copy " + source + " to " + destination + " : " + ex;
+        }
+    }
 }
