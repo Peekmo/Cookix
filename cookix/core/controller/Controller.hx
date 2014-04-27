@@ -1,6 +1,7 @@
 package cookix.core.controller;
 
-import cookix.core.container.Service;
+import cookix.core.container.ServiceContainer;
+import cookix.core.services.container.Service;
 
 /**
  * Controller to extends to get all tools
@@ -18,6 +19,6 @@ class Controller
      */
     public function boot()
     {
-        this.container = new Service();
+        this.container = ServiceContainer.get('cookix.container');
     }
 }

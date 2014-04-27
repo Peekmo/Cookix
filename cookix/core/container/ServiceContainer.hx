@@ -32,10 +32,6 @@ class ServiceContainer
      */
     public static function get(service: String) : Dynamic
     {
-        if ('cookix.container' == service) {
-            return new Service();
-        }
-
         if (!instanciations.exists(service) && !services.has(service)) {
             throw new cookix.exceptions.NotFoundException('Service not found : '+ service);
         }

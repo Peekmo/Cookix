@@ -1,7 +1,8 @@
-package cookix.core.container;
+package cookix.core.services.container;
 
 import cookix.tools.ObjectDynamic;
 import cookix.core.container.TagType;
+import cookix.core.container.ServiceContainer;
 
 /**
  * Service container toolkit

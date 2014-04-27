@@ -2,6 +2,7 @@ package cookix.tools;
 
 import sys.FileSystem;
 import sys.io.File;
+using StringTools;
 
 /**
  * Utility to deal with folders
@@ -17,23 +18,50 @@ class FolderReader
     public static function getFiles(rootFolder: String) : Array<String>
     {
         var files : Array<String> = new Array<String>();
-        var folders : Array<String> = FileSystem.readDirectory(rootFolder);
 
-        for (file in folders.iterator()) {
-            var path : String = rootFolder + '/' + file;
-            if (FileSystem.isDirectory(path)) {
-                var data : Array<String> = getFiles(path);
+        if (FileSystem.exists(rootFolder)) {
+            var folders : Array<String> = FileSystem.readDirectory(rootFolder);
 
-                for (i in data) {
-                    files.push(i);
+            for (file in folders.iterator()) {
+                var path : String = rootFolder + '/' + file;
+                if (FileSystem.isDirectory(path)) {
+                    var data : Array<String> = getFiles(path);
+
+                    for (i in data) {
+                        files.push(i);
+                    }
+
+                } else {
+                    files.push(path);
                 }
-
-            } else {
-                files.push(path);
             }
         }
 
         return files;
+    }
+
+
+    /**
+     * Get all files from the given folder from the given classPath as entry point
+     * @param  classPath : String Class path to start from
+     * @param  folder :    String Folder's relative path
+     * @return Files found
+     */
+    public static function getFilesFromClassPath(classPath : String, folder: String) : Array<String>
+    {
+        #if macro
+            var path : String = haxe.macro.Context.resolvePath(classPath);
+            var values : Array<String> = path.split('/');
+
+            //Removes the last element (Class file name file name)
+            values.pop();
+
+            return getFiles(values.join('/') + folder);
+        #else 
+            throw "Method unsupported outside a macro";
+        #end
+
+        return null;
     }
 
     /**
@@ -56,6 +84,35 @@ class FolderReader
         #end
 
         return null;
+    }
+
+    /**
+     * Get all classes in the given folder from the given class path
+     * @param  classPath : String Class path to start from
+     * @param  folder :    String Folder's relative path
+     * @return Classes paths
+     */
+    public static function getClassesFromClassPath(classPath : String, folder : String) : Array<String>
+    {
+        var files : Array<String> = getFilesFromClassPath(classPath, folder);
+        var values : Array<String> = classPath.split('/');
+
+        //Removes the last element (Class file name file name)
+        values.pop();
+        var rootClassPath : String = values.join('/');
+
+        var classPaths : Array<String> = new Array<String>();
+        for (file in files) {
+            if (file.endsWith(".hx")) {
+                var paths : Array<String> = file.split(rootClassPath);
+
+                if (paths.length >= 2) {
+                    classPaths.push((rootClassPath + paths.pop().substr(0, -3)).split("/").join("."));
+                }
+            }
+        }
+        
+        return classPaths;
     }
 
     /**

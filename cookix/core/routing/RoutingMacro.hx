@@ -79,8 +79,7 @@ class RoutingMacro
     private static function parsePackageController(name : String) : Void
     {
         #if macro
-            var controllersContent : String        = File.getContent(FolderReader.getFileFromClassPath(name, "/config/routing.json"));
-            var controllersDecoded : Array<String> = cast JsonParser.decode(controllersContent);
+            var controllersDecoded : Array<String> = FolderReader.getClassesFromClassPath(name, "/controllers");
 
             // Parse each controllers
             for (controller in controllersDecoded.iterator()) {

@@ -130,9 +130,7 @@ class ServiceMacro
     private static function parsePackageService(name : String) : Void
     {
         #if macro
-            var servicesContent : String = File.getContent(FolderReader.getFileFromClassPath(name, "/config/services.json"));
-
-            var servicesDecoded : Array<String> = cast JsonParser.decode(servicesContent);
+            var servicesDecoded : Array<String> = FolderReader.getClassesFromClassPath(name, "/services");
 
             // Parse service
             for (service in servicesDecoded.iterator()) {

@@ -1,0 +1,5 @@
+-main Boot
+-cp src/
+-cp application/
+-lib cookix
+#--no-traces

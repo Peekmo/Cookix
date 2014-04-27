@@ -1,6 +1,6 @@
 package cookix.core.services.event;
 
-import cookix.core.container.Service;
+import cookix.core.services.container.Service;
 import haxe.ds.StringMap;
 import cookix.tools.ObjectDynamic;
 import cookix.core.container.TagType;

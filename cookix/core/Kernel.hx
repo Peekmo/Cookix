@@ -1,7 +1,7 @@
 package cookix.core;
 
 import cookix.core.routing.RouteType;
-import cookix.core.container.Service;
+import cookix.core.container.ServiceContainer;
 import cookix.core.http.request.RequestEvent;
 import cookix.core.http.response.ResponseEvent;
 
@@ -16,20 +16,17 @@ class Kernel
      */
     public static function handle(request: Dynamic)
     {
-        // Get service container
-        var container : Service = new Service();
-
         // Dispatch kernel request
-        container.get('cookix.dispatcher').dispatch('cookix.onRequest', new RequestEvent(request));
+        ServiceContainer.get('cookix.dispatcher').dispatch('cookix.onRequest', new RequestEvent(request));
 
         // Sets the request to the context
-        container.get('cookix.context').request = request;
-        var route : RouteType = cast container.get('cookix.routing').match(Std.string(request.uri));
+        ServiceContainer.get('cookix.context').request = request;
+        var route : RouteType = cast ServiceContainer.get('cookix.routing').match(Std.string(request.uri));
 
-        var response = container.get('cookix.resolver').resolve(route);
+        var response = ServiceContainer.get('cookix.resolver').resolve(route);
 
         // Dispatch kernel resposne
-        container.get('cookix.dispatcher').dispatch('cookix.onResponse', new ResponseEvent(response));
+        ServiceContainer.get('cookix.dispatcher').dispatch('cookix.onResponse', new ResponseEvent(response));
 
         // Render the response
         response.render();
