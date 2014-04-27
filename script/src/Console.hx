@@ -84,7 +84,7 @@ class Console
 		catch (e:Dynamic) { };
 		proc.close();
 
-		return Sys.args().pop().startsWith(result);
+		return Sys.getCwd() == result;
 	}
 
 	/**
