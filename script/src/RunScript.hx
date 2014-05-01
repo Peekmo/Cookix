@@ -1,5 +1,11 @@
 package ;
 
+import cookix.tools.console.CommandReader;
+import cookix.tools.console.CliException;
+import cookix.tools.console.Console;
+import haxe.ds.StringMap;
+using cookix.tools.ds.StringMapTools;
+
 /**
  * Run script for haxelib
  * @author Axel Anceau (Peekmo)
@@ -15,11 +21,11 @@ class RunScript
 			createCommands();
 			Console.initialization();
 
-			CommandReader.check();
+			CommandReader.call();
 		} catch (ex : CliException) {
-			Sys.println("ERROR => " + ex.message);
-			Sys.println("");
-			Console.showHelp();
+			Console.writeln("ERROR => " + ex.message);
+			Console.writeln("");
+			Console.showHelp(ex.command);
 		}
 	}
 
@@ -31,23 +37,36 @@ class RunScript
 		CommandReader.push({
 			name: "help", 
 			description: "Prints command's lists", 
-			hasValue: false,
-			callback: function(?value : String) {
-				Console.showHelp();
+			callback: function(?values : StringMap<String>) {
+				if (values.size() == 0) {
+					Console.showHelp();
+				}
 			}
 		});
 
-		CommandReader.push({
-			name: "project", 
-			description: "Creates a new cookix project", 
-			hasValue: true,
-			valueMandatory: true,
-			valueDescription: "project-name",
-			callback: function(?value: String) {
-				var project : ProjectBuilder = new ProjectBuilder(Console.userDir, value);
-				project.build();
-				Sys.println("The project has been successfully created.");
-			}
-		});
+		CommandReader.push(
+			{
+				name: "project", 
+				description: "Manage a cookix project",
+				callback: function(?values : StringMap<String>) {
+					if (values.size() == 0) {
+						Console.showHelp("project");
+					}
+				}
+			},
+			[
+				{
+					name: "new",
+					description: "Creates a new project",
+					valueMandatory: true,
+					valueDescription: "project-name",
+					callback: function(?value: String) {
+						var project : ProjectBuilder = new ProjectBuilder(Console.userDir, value);
+						project.build();
+						Sys.println("The project has been successfully created.");
+					}
+				} 
+			]
+		);
 	}
 }
