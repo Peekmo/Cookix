@@ -5,7 +5,7 @@ import haxe.ds.StringMap;
 typedef Option = {
     var name : String;
     var description : String;
-    @:optional var callback : ?String->Void; // Function which takes the value as a parameter
+    @:optional var callback : String; // Function which takes the value as a parameter
     @:optional var valueMandatory : Bool;
     @:optional var valueDescription : String;
 }
@@ -13,8 +13,9 @@ typedef Option = {
 typedef Command = {
     var name        : String;
     var description : String;
-    var callback    : ?StringMap<String>->Void; // Function which takes the value as a parameter
+    var classPath   : String;
     var options     : StringMap<Option>; // Contains at least --help
+    var callback    : String; // Name of the function which takes the value as a parameter
 }
 
 /**
@@ -33,21 +34,25 @@ class CommandReader
     * @param command  : {name: String, description: String, callback: ?StringMap<String>->Void} Command to add
     * @param ?options : Array<Option> Options associated to the given 
     */
-    public static function push(commandData : {name: String, description: String, callback: ?StringMap<String>->Void}, ?options : Array<Option>) : Void
+    public static function push(commandData : {name: String, description: String, classPath: String, ?callback: String}, ?options : Array<Option>) : Void
     {
         var command : Command = {
             name: commandData.name,
             description: commandData.description,
-            callback: commandData.callback,
+            classPath : commandData.classPath,
+            callback: commandData.callback != null ? commandData.callback : 'execute',
             options: new StringMap<Option>()
         };
+
+        command.options.set("help", {
+            name: "help",
+            description: "Print options allowed for this command",
+            callback: 'help',
+            valueMandatory: false  
+        });
         
         if (options != null) {
             for (option in options.iterator()) {
-                if (option.name == "help") {
-                    throw "You can't create a --help option. This option is created by Cookix by default";
-                }
-
                 if (option.valueMandatory == null) {
                     option.valueMandatory = false;
                 }
@@ -55,15 +60,6 @@ class CommandReader
                 command.options.set(option.name, option);                
             }
         }
-
-        command.options.set("help", {
-            name: "help",
-            description: "Print options allowed for this command",
-            callback: function(?value: String) {
-                Console.showHelp(command.name);
-            },
-            valueMandatory: false  
-        });
 
         commands.set(command.name, command);
     }
@@ -101,13 +97,21 @@ class CommandReader
         check();
 
         var command = commands.get(Console.command);
-        command.callback(Console.options);
+
+        // Create command's class
+        var oClass : Dynamic = Type.createEmptyInstance(Type.resolveClass(command.classPath));
+
+        // Call _initialization_
+        Reflect.callMethod(oClass, Reflect.field(oClass, '_initialization_'), []);
+
+        // Class's callback
+        Reflect.callMethod(oClass, Reflect.field(oClass, command.callback), []);
 
         for (optionName in Console.options.keys()) {
             var option = command.options.get(optionName);
 
             if (option.callback != null) {
-                option.callback(Console.options.get(option.name));
+                Reflect.callMethod(oClass, Reflect.field(oClass, option.callback), [Console.options.get(option.name)]);
             }
         }
     }

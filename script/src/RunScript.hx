@@ -4,7 +4,10 @@ import cookix.tools.console.CommandReader;
 import cookix.tools.console.CliException;
 import cookix.tools.console.Console;
 import haxe.ds.StringMap;
-using cookix.tools.ds.StringMapTools;
+
+// Commands to import !
+import commands.Help;
+import commands.Project;
 
 /**
  * Run script for haxelib
@@ -37,22 +40,14 @@ class RunScript
 		CommandReader.push({
 			name: "help", 
 			description: "Prints command's lists", 
-			callback: function(?values : StringMap<String>) {
-				if (values.size() == 0) {
-					Console.showHelp();
-				}
-			}
+			classPath: 'commands.Help'
 		});
 
 		CommandReader.push(
 			{
 				name: "project", 
 				description: "Manage a cookix project",
-				callback: function(?values : StringMap<String>) {
-					if (values.size() == 0) {
-						Console.showHelp("project");
-					}
-				}
+				classPath: 'commands.Project'
 			},
 			[
 				{
@@ -60,11 +55,7 @@ class RunScript
 					description: "Creates a new project",
 					valueMandatory: true,
 					valueDescription: "project-name",
-					callback: function(?value: String) {
-						var project : ProjectBuilder = new ProjectBuilder(Console.userDir, value);
-						project.build();
-						Sys.println("The project has been successfully created.");
-					}
+					callback: 'create'
 				} 
 			]
 		);
