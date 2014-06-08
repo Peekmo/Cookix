@@ -35,7 +35,7 @@ class Configuration
      * Get application's configuration ptions
      * @return ObjectDynamic
      */
-    public function getConfiguration() : ObjectDynamic
+    public inline function getConfiguration() : ObjectDynamic
     {
         return this.configuration;
     }
@@ -50,7 +50,7 @@ class Configuration
         if (this.planeConfiguration.has(name)) {
             return this.planeConfiguration[name];
         } else {
-            throw new NotFoundException('Parameter '+ name +' does not exists');
+            throw new NotFoundException('Parameter $name does not exists');
         }
     }
 }

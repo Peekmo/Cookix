@@ -47,7 +47,6 @@ class Resolver
         // Before controller event
         this.dispatcher.dispatch('cookix.beforeController', new BeforeControllerEvent(inst));
 
-        Reflect.callMethod(inst, Reflect.field(inst, 'boot'), []);
         var response = Reflect.callMethod(inst, Reflect.field(inst, route.action), this.context.request.routing.values());
 
         return response;

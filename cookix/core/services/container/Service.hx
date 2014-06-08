@@ -24,7 +24,7 @@ class Service
      * @param  service: String        Service's name
      * @return          The service
      */
-    public function get(service: String) : Dynamic
+    public inline function get(service: String) : Dynamic
     {
         return ServiceContainer.get(service);
     }
@@ -35,7 +35,7 @@ class Service
      * @param  ?type: String  Type of events required
      * @return     Tag list
      */
-    public function getTags(name: String, ?type : String) : Array<TagType>
+    public inline function getTags(name: String, ?type : String) : Array<TagType>
     {
         return ServiceContainer.getTags(name, type);
     }

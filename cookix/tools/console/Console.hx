@@ -138,7 +138,7 @@ class Console
 	 * Write a message, without a new line
 	 * @param  message : String Message to write
 	 */
-	public static function write(message : String) : Void
+	public static inline function write(message : String) : Void
 	{
 		Sys.print(message);
 	}
@@ -147,7 +147,7 @@ class Console
 	 * Write a message with a new line
 	 * @param  message : String Message to print
 	 */
-	public static function writeln(message : String) : Void
+	public static inline function writeln(message : String) : Void
 	{
 		Sys.println(message);
 	}

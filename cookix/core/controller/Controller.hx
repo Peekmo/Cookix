@@ -17,7 +17,7 @@ class Controller
     /**
      * Boots the Controller class
      */
-    public function boot()
+    public function __init__()
     {
         this.container = ServiceContainer.get('cookix.container');
     }
